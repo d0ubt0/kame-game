@@ -4,9 +4,9 @@ function App() {
 
   return (
     <>
-      <p>
+      <h1>
         Kame Game
-      </p>
+      </h1>
     </>
   )
 }
