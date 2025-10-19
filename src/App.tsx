@@ -1,16 +1,32 @@
-import './App.css'
-import { CardCollectionItem } from './components/CardCollectionItem'
+// src/App.tsx
+
+import { Routes, Route } from 'react-router-dom';
+import { Inicio } from './pages/Inicio';
+import { Admin } from './pages/Admin';
 
 function App() {
-
   return (
-    <>
-      <CardCollectionItem name='Mudora the Sword Oracle' description={`You can discard 1 other EARTH Fairy monster; Special Summon this card from your hand, then you can place 1 "Gravekeeper's Trap" from your Deck face-up in your Spell & Trap Zone. (Quick Effect): You can banish this card from your field or GY, then target up to 3 cards in any GY(s), or up to 5 if "Exchange of the Spirit" is on your field or in your GY; shuffle them into the Deck. You can only use each effect of "Mudora the Sword Oracle" once per turn.`} attack={1500} defense={1800} image='/YugiOhCardPlaceholder.jpg'></CardCollectionItem>
-      <h1>
-        Kame Game
-      </h1>
-    </>
-  )
+    <div>
+      {/* Aquí podrías poner un componente <Navbar> o <Header> 
+        que quieras que se muestre en TODAS las páginas.
+      */}
+      
+      {/* El componente <Routes> actúa como un 'switch' */}
+      <Routes>
+        {/* Define cada ruta. 
+          path="/" es la URL raíz (tu página de inicio).
+          element={} es el componente que se debe renderizar.
+        */}
+        <Route path="/" element={<Inicio />} />
+        
+        {/* Esta es la ruta para tu panel de admin */}
+        <Route path="/admin" element={<Admin />} />
+
+        {/* Aquí podrías añadir una ruta "catch-all" para páginas no encontradas */}
+        <Route path="*" element={<h1>404: Página no encontrada</h1>} />
+      </Routes>
+    </div>
+  );
 }
 
-export default App
+export default App;
