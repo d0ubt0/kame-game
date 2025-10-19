@@ -3,13 +3,15 @@
 import { Routes, Route } from 'react-router-dom';
 import { Inicio } from './pages/Inicio';
 import { Admin } from './pages/Admin';
+import { Navbar } from './components/Navbar';
 
 function App() {
   return (
-    <div>
+    <div className='main'>
       {/* Aquí podrías poner un componente <Navbar> o <Header> 
-        que quieras que se muestre en TODAS las páginas.
-      */}
+        que quieras que se muestre en TODAS las páginas.*/
+        <Navbar />
+      }
       
       {/* El componente <Routes> actúa como un 'switch' */}
       <Routes>

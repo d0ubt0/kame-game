@@ -8,7 +8,7 @@ export function Admin() {
       <h2>Panel de Administración</h2>
       <p>Aquí es donde gestionarás todo el contenido.</p>
       
-      {/* Podemos añadir un enlace para volver */}
+      
       <Link to="/">Volver al Inicio</Link>
     </div>
   );
