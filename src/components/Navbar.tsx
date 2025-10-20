@@ -11,9 +11,10 @@ export function Navbar() {
         </div>
 
  
-        <li><Link to="/">Mi Colección</Link></li>
-        <li><Link to="/">Arena de Batalla</Link></li>
+        <li><Link to="/Coleccion">Mi Colección</Link></li>
+        <li><Link to="/Arena">Arena de Batalla</Link></li>
         <li><Link to="/Admin">Admin</Link></li>
+        <li><Link to="/Carrito">Carrito</Link></li>
       </ul>
 
       <div className={"authActions"}>
