@@ -8,7 +8,7 @@ export function Admin() {
       <PageTitle title="Panel de Administración" />
       <p>Aquí es donde gestionarás todo el contenido.</p>
       <div>
-        <Link to="/Admin/Card">Gestionar Cartas</Link>
+        <Link to="/Admin/Cartas">Gestionar Cartas</Link>
         <br />
         <Link to="/Admin/Productos">Gestionar Productos</Link>
         <br />

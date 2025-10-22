@@ -4,10 +4,10 @@ import { Routes, Route } from 'react-router-dom';
 import { Inicio } from './pages/Inicio';
 import { Coleccion } from './pages/Coleccion';
 import { Arena } from './pages/Arena';
-import { Admin } from './pages/Admin/Admin';
+import { Admin } from './pages/Admin/AdminDashboard';
 import { Carrito } from './pages/Carrito';
 import { Navbar } from './components/Navbar';
-import { AdminCard } from './pages/Admin/AdminCard';
+import ManageSingles from "./pages/Admin/adminCartas";
 
 function App() {
   return (
@@ -37,7 +37,7 @@ function App() {
         {/*ruta para panel de admin */}
         <Route path="/Carrito" element={<Carrito />} />
 
-        <Route path="/Admin/Card" element={<AdminCard />} />
+        <Route path="/Admin/Cartas" element={< ManageSingles />} />
 
         {/* Aquí podrías añadir una ruta "catch-all" para páginas no encontradas */}
         <Route path="*" element={<h1>404: Página no encontrada</h1>} />
