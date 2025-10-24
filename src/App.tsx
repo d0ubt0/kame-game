@@ -7,7 +7,7 @@ import { Arena } from './pages/Arena';
 import { Admin } from './pages/Admin/AdminDashboard';
 import { Carrito } from './pages/Carrito';
 import { Navbar } from './components/Navbar';
-import ManageSingles from "./pages/Admin/AdminCartas";
+import ManageSingles from "./pages/Admin/adminCartas";
 
 
 function App() {
