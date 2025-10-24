@@ -1,6 +1,6 @@
 // src/components/singles/SingleTable.tsx
 import React from 'react';
-import type { Carta } from '../../types/cartas'; 
+import type { Carta } from '../../../types/yugioh'; 
 
 // Props que espera la tabla
 interface SingleTableProps {

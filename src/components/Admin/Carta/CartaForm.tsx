@@ -1,7 +1,7 @@
 // src/components/singles/SingleForm.tsx
 import React, { useState, useEffect } from 'react';
 // Importamos los tipos actualizados
-import type { Carta, CartaFormData } from '../../types/cartas';
+import type { Carta, CartaFormData } from '../../../types/yugioh';
 
 // Props que espera el formulario
 interface SingleFormProps {
@@ -59,17 +59,17 @@ const SingleForm: React.FC<SingleFormProps> = ({ initialData, onSubmit, onCancel
   };
 
   return (
-    <div style={{ border: '1px solid #ccc', padding: '16px', borderRadius: '8px', marginTop: '16px' }}>
-      <h3>{title}</h3>
-      <form onSubmit={handleSubmit}>
+    <div style={{ border: '1px solid #ccc', padding: '16px', borderRadius: '8px', marginTop: '16px', justifyContent: 'center' }}>
+      <h3 style={{ fontSize: '2rem', color: '#E6C200'}}>{title}</h3>
+      <form onSubmit={handleSubmit} style={{ justifyContent: 'center'}}>  
 
         <div style={{ marginBottom: '12px' }}>
           <label htmlFor="name">Nombre:</label><br />
-          <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required style={{ width: '300px' }} />
+          <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required style={{ width: '300px', height: '2rem', border: '1px solid #ccc', borderRadius: '4px', padding: '4px' }} />
         </div>
 
-        <div style={{ marginBottom: '12px' }}>
-          <label htmlFor="image">URL de la Imagen:</label><br />
+        <div style={{ marginBottom: '12px'}}>
+          <label htmlFor="image" style={{  }}>URL de la Imagen:</label><br />
           <input type="text" id="image" name="image" placeholder="https://ejemplo.com/imagen.jpg" value={formData.image} onChange={handleChange} required style={{ width: '300px' }} />
         </div>
 

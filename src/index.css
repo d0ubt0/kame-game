@@ -2,6 +2,7 @@
   font-family: cinzel;
   line-height: 1.5;
   font-weight: 400;
+  height: 100%;
 
   width: 100%;
   margin: 0;
@@ -32,6 +33,7 @@ body {
   min-height: 100vh;
   padding: 0;
   width: 100%;
+  background-color: #242424;
 }
 
 h1 {

@@ -14,3 +14,14 @@ export interface Carta {
 
 // 2. Definimos el tipo para los datos del formulario (todo menos el 'id')
 export type CartaFormData = Omit<Carta, 'id'>;
+
+export interface Paquete {
+  id: number; // O string. Sigue siendo necesario para el CRUD.
+  name: string;
+  image: string; // Nueva: Será una URL a la imagen
+  price: number;
+  cards: string[]; // Nueva: Lista de cartas incluidas en el paquete
+}
+
+// 2. Definimos el tipo para los datos del formulario (todo menos el 'id')
+export type PaqueteFormData = Omit<Paquete, 'id'>;

@@ -1,11 +1,11 @@
 // src/pages/admin/ManageSingles.tsx
-import React, { useState, useEffect } from 'react';
-import SingleTable from '../../components/AdminCartas/CartaTable';
-import SingleForm from '../../components/AdminCartas/CartaForm';
+import  { useState, useEffect } from 'react';
+import SingleTable from '../../components/Admin/Carta/CartaTable';
+import SingleForm from '../../components/Admin/Carta/CartaForm';
 import { PageTitle } from '../../components/PageTitle';
 // Importamos los tipos
 // Importamos los tipos
-import type { Carta, CartaFormData } from '../../types/cartas';
+import type { Carta, CartaFormData } from '../../types/yugioh';
 
 // --- DATOS DE EJEMPLO (Actualizados) ---
 

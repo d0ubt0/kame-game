@@ -10,7 +10,7 @@ export function Admin() {
       <div>
         <Link to="/Admin/Cartas">Gestionar Cartas</Link>
         <br />
-        <Link to="/Admin/Productos">Gestionar Productos</Link>
+        <Link to="/Admin/Paquetes">Gestionar Paquetes</Link>
         <br />
       </div>
 
