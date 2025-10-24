@@ -1,0 +1,41 @@
+.CollectionContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #1a1a1a;
+}
+
+.CollectionContainer h1 {
+  background-color: #E6C200;
+  text-align: center;
+  color: black;
+  width: 100%;
+  font-size: 4rem;
+  padding: 2rem;
+  margin: 0;
+}
+
+.CardsContainer {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  grid-auto-rows: auto;
+  gap: 2.5rem; 
+}
+
+.ShopButton{
+  color: black;
+  background-color: #E6C200;
+  border-radius: 8px;
+  font-size: 1.5rem;
+  font-style: normal ;
+  font-weight: bolder;
+  padding: 8px;
+  margin-bottom: 2rem;
+}
+
+.ShopButton:hover{
+  color: black
+}
+
