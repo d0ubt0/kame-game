@@ -54,10 +54,39 @@
     background-color: #ddd;
     border-color: #cfb000;
     border-width: 2px;
+    transform: translateY(-2px);
+}
+
+.CardStoreItemContainer .Selected{
+    background-color: #EFF5D2;
+    border-color: #556B2F;
+    border-width: 2px;
+    color: #556B2F;
 }
 
 .CardStoreItemContainer .Selected:hover {
+    background-color: #fff;
     border-color: #a50034;
     border-width: 2px; 
     color: #690021;
+}
+
+.CartButton {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    border-radius: 8px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: #ccc;
+    transition: all 0.2s ease-in-out;
+}
+
+.CartButton:hover {
+    background-color: #eee;
+    transform: translateY(-4px);
 }
