@@ -1,0 +1,63 @@
+.CardStoreItemContainer {
+    display: flex;
+    flex-direction: column;
+    background: #141414;
+    color: #fff;
+    border: 1px solid #b89b00;
+    border-radius: 16px;
+    padding: 0;
+    width: 240px;
+    overflow: hidden;
+}
+
+.CardStoreItemContainer img {
+    width: 100%;
+    border-radius: 12px;
+    object-fit: cover;
+    margin-bottom: 0.5rem;
+}
+
+.CardStoreItemName {
+    font-size: 0.9rem;
+    font-weight: 800;
+    margin: 0;
+    margin-left: 16px;
+    height: 30px;
+    text-overflow: ellipsis;
+    line-height: 0.9rem;
+    overflow:hidden;
+}
+
+.CardStoreItemContainer span{
+    color: #e7c500;
+    font-size: 0.8rem;
+    font-weight: bolder;
+    text-align: left;
+    margin-left: 16px;
+    margin-bottom: 0.3rem;
+}
+
+.CardStoreItemContainer button {
+    box-sizing: border-box;
+    border-width: 2px;
+    background-color: #ccc;
+    color: #141414;
+    width: 75%;
+    align-self: center;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    transition: all 0.2s ease-in-out;
+}
+
+.CardStoreItemContainer button:hover {
+    background-color: #ddd;
+    border-color: #cfb000;
+    border-width: 2px;
+}
+
+.CardStoreItemContainer .Selected:hover {
+    border-color: #a50034;
+    border-width: 2px; 
+    color: #690021;
+}

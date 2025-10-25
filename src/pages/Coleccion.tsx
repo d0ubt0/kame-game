@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import './Coleccion.css';
 import { CardCollectionItem } from '../components/Collection/CardCollectionItem';
+import { PageTitle } from '../components/PageTitle';
 
 const placeholderCards = [
   {
@@ -43,8 +44,9 @@ const placeholderCards = [
 
 export function Coleccion() {
   return (
+    <>
+    <PageTitle title='Collection'/>
     <div className='CollectionContainer'>
-      <h1>Mi Colección</h1>
       
       <div className='CardsContainer'>
         {
@@ -55,5 +57,6 @@ export function Coleccion() {
       </div>
       <Link to="/" className='ShopButton'>Conseguir mas Cartas</Link>
     </div>
+    </>
   );
 }
