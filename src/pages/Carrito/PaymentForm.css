@@ -1,0 +1,83 @@
+* {
+  box-sizing: border-box;
+}
+
+
+.formulario{
+    padding: 30px;
+    background-color: #1a1a1a;
+    border: 2px solid #ffcc00;
+    border-radius: 20px;
+    
+}
+
+.contenedor-titulo{
+    background-color: #242424;
+    border-radius: 10px;
+    padding:1px;
+    margin-bottom: 20px;
+
+}
+
+.titulo-formulario{
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    
+    color: #ffcc00;
+}
+
+
+
+.contenedor-items{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.items{
+    display: flex;
+    flex-direction: column;
+
+}
+
+label, input{
+    width: 100%;
+}
+
+label{
+    color: #ffcc00;
+}
+
+input{
+    background-color: #1a1a1a;
+    border: 1.5px solid #fff;
+    padding: 10px;
+}
+
+.datos-tarjeta{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.expiracion input{
+    width: 75%;
+}
+
+.cvv{
+    display: flex;
+    flex-direction: column;
+    padding-left: 25%;
+}
+
+.contenedor-boton{
+    display: flex;
+    justify-content: center;
+}
+
+.boton-pagar{
+    background-color: #ffcc00;
+    color: #000;
+    font-weight: bold;  
+    min-width: 50%;
+}
+

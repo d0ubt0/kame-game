@@ -1,0 +1,23 @@
+.carrito{
+  padding: 0% 5%;
+}
+
+.panel-carrito{
+    display: grid;
+    grid-auto-flow: dense;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+
+}
+
+@media (min-width: 900px) {
+  .panel-carrito {
+    grid-template-columns: 1fr 1fr; 
+  }
+
+  
+}
+
+.panel-formulario {
+  padding: 5% 15%;
+}
