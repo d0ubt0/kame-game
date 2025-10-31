@@ -8,6 +8,8 @@ import { Admin } from './pages/Admin/AdminDashboard';
 import { Carrito } from './pages/Carrito';
 import { Navbar } from './components/Navbar';
 import ManageSingles from './pages/Admin/AdminCartas';
+import ManagePaquetes from './pages/Admin/AdminPaquetes';
+import ManageUsers from './pages/Admin/adminUsuario';
 
 
 function App() {
@@ -39,6 +41,10 @@ function App() {
         <Route path="/Carrito" element={<Carrito />} />
 
         <Route path="/Admin/Cartas" element={< ManageSingles />} />
+
+        <Route path="/Admin/Paquetes" element={< ManagePaquetes />} />
+
+        <Route path="/Admin/Usuarios" element={< ManageUsers />} />
 
         {/* Aquí podrías añadir una ruta "catch-all" para páginas no encontradas */}
         <Route path="*" element={<h1>404: Página no encontrada</h1>} />

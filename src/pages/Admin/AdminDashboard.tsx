@@ -12,6 +12,7 @@ export function Admin() {
         <br />
         <Link to="/Admin/Paquetes">Gestionar Paquetes</Link>
         <br />
+        <Link to="/Admin/Usuarios">Gestionar Usuarios</Link>
       </div>
 
       

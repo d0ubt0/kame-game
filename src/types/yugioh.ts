@@ -25,3 +25,13 @@ export interface Paquete {
 
 // 2. Definimos el tipo para los datos del formulario (todo menos el 'id')
 export type PaqueteFormData = Omit<Paquete, 'id'>;
+
+export interface Usuario {
+  id: number;
+  username: string;
+  email: string;
+  password?: string; // Opcional para edición
+  role: 'admin' | 'user';
+}
+
+export type UsuarioFormData = Omit<Usuario, 'id'>;
