@@ -4,7 +4,7 @@ import { PageTitle } from '../components/PageTitle';
 import { PaymentForm } from './Carrito/PaymentForm';
 import './Carrito.css'
 
-export function Carrito() {
+export function Carrito({selectedCards}: {selectedCards: Set<number>}) {
 
   /*const [cart, setCart] = useState<Product[]>([
     {

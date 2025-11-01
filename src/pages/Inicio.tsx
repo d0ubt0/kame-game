@@ -4,53 +4,17 @@ import { PageTitle } from '../components/PageTitle';
 import { useState } from 'react';
 import type { Carta } from '../types/yugioh';
 import './Inicio.css';
+import { placeholderCards, placeholderPacks } from '../db/db';
 
 export type StoreCardType = Pick<Carta, 'id' | 'name' | 'price' | 'image'>;
 
-const placeholderCards = [
-  {
-    id: 12,
-    name: "Dragón Escarlata de las Montanas",
-    price: 3200,
-    image: "/YugiOhCardPlaceholder.jpg"
-  },
-  {
-    id: 13,
-    name: "Caballero de la Aurora",
-    price: 2100,
-    image: "/YugiOhCardPlaceholder.jpg"
-  },
-  {
-    id: 295,
-    name: "Hechicera del Viento",
-    price: 1700,
-    image: "/YugiOhCardPlaceholder.jpg"
-  },
-  {
-    id: 1,
-    name: "Lobo de Sombras",
-    price: 1900,
-    image: "/YugiOhCardPlaceholder.jpg"
-  },
-  {
-    id: 90,
-    name: "Mecha-Titán ZX9",
-    price: 2800,
-    image: "/YugiOhCardPlaceholder.jpg"
-  }
-];
 
-const placeholderPacks = [
-  { id: 201, name: "Sobre Leyendas del Dragón Blanco", price: 8500, image: "/packPlaceholder.png" },
-  { id: 202, name: "Paquete Caos del Infinito", price: 7200, image: "/packPlaceholder.png" },
-  { id: 203, name: "Caja Fusión del Destino", price: 12000, image: "/packPlaceholder.png" },
-  { id: 204, name: "Mega Pack del Duelista", price: 9500, image: "/packPlaceholder.png" }
-];
-
-
-export function Inicio() {
-  const [selectedCards, setSelectedCards] = useState<Set<number>>(new Set()); // Funciona con el ID
-  const [packsStore] = useState<StoreCardType[]>(placeholderPacks);
+export function Inicio({selectedCards, setSelectedCards}: {
+  selectedCards: Set<number>;
+  setSelectedCards: (cards: Set<number>) => void;
+}) {
+   // Funciona con el ID
+  const [packsStore, ] = useState<StoreCardType[]>(placeholderPacks);
   const [cardsStore, ] = useState<StoreCardType[]>(placeholderCards);
 
   const updateSelectedCards = (id : number) => {

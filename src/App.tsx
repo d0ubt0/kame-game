@@ -10,9 +10,12 @@ import { Navbar } from './components/Navbar';
 import ManageSingles from './pages/Admin/AdminCartas';
 import ManagePaquetes from './pages/Admin/AdminPaquetes';
 import ManageUsers from './pages/Admin/adminUsuario';
+import { useState } from 'react';
 
 
 function App() {
+  const [selectedCards, setSelectedCards] = useState<Set<number>>(new Set());
+
   return (
     <div className='main'>
       {/* Aquí podrías poner un componente <Navbar> o <Header> 
@@ -26,7 +29,7 @@ function App() {
           path="/" es la URL raíz (tu página de inicio).
           element={} es el componente que se debe renderizar.
         */}
-        <Route path="/" element={<Inicio />} />
+        <Route path="/" element={<Inicio selectedCards={selectedCards} setSelectedCards={setSelectedCards}/>} />
         
         {/* ruta para panel mi collección*/}
         <Route path="/Coleccion" element={<Coleccion />} />
@@ -38,7 +41,7 @@ function App() {
         <Route path="/Admin" element={<Admin />} />
 
         {/*ruta para panel de admin */}
-        <Route path="/Carrito" element={<Carrito />} />
+        <Route path="/Carrito" element={<Carrito selectedCards={selectedCards}/>} />
 
         <Route path="/Admin/Cartas" element={< ManageSingles />} />
 

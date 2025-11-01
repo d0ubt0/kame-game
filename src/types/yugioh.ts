@@ -35,3 +35,6 @@ export interface Usuario {
 }
 
 export type UsuarioFormData = Omit<Usuario, 'id'>;
+
+// Database
+
