@@ -40,10 +40,17 @@ const placeholderCards = [
   }
 ];
 
+const placeholderPacks = [
+  { id: 201, name: "Sobre Leyendas del Dragón Blanco", price: 8500, image: "/packPlaceholder.png" },
+  { id: 202, name: "Paquete Caos del Infinito", price: 7200, image: "/packPlaceholder.png" },
+  { id: 203, name: "Caja Fusión del Destino", price: 12000, image: "/packPlaceholder.png" },
+  { id: 204, name: "Mega Pack del Duelista", price: 9500, image: "/packPlaceholder.png" }
+];
 
 
 export function Inicio() {
   const [selectedCards, setSelectedCards] = useState<Set<number>>(new Set()); // Funciona con el ID
+  const [packsStore] = useState<StoreCardType[]>(placeholderPacks);
   const [cardsStore, ] = useState<StoreCardType[]>(placeholderCards);
 
   const updateSelectedCards = (id : number) => {
@@ -64,12 +71,21 @@ export function Inicio() {
       <img src="/yugioh-home.webp" alt="" />
       <PageTitle title='Yugi Oh Store'/>
       <div className='StoreContainer'>
+        
+        <h2 className="section-title">Cartas</h2>
         <section className='CardsStoreContainer'>
+          {cardsStore.map(value => {
+            const isSelected = selectedCards.has(value.id) ? true : false;
+            return <CardStoreItem key={value.id} id={value.id} isSelected={isSelected} name={value.name} image={value.image} price={value.price} addStoreItemFunction={updateSelectedCards}/>
+          })}
+        </section>
 
-        {cardsStore.map(value => {
-          const isSelected = selectedCards.has(value.id) ? true : false;
-          return <CardStoreItem key={value.id} id={value.id} isSelected={isSelected} name={value.name} image={value.image} price={value.price} addStoreItemFunction={updateSelectedCards}/>
-        })}
+        <h2 className="section-title">Paquetes</h2>
+        <section className='CardsStoreContainer'>
+          {packsStore.map(value => {
+            const isSelected = selectedCards.has(value.id) ? true : false;
+            return <CardStoreItem key={value.id} id={value.id} isSelected={isSelected} name={value.name} image={value.image} price={value.price} addStoreItemFunction={updateSelectedCards}/>
+          })}
         </section>
       </div>
       <Link className='CartButton'to='/Carrito'>
@@ -79,7 +95,6 @@ export function Inicio() {
           <path d="M18 16H8a1 1 0 0 1-.958-.713L4.256 6H3a1 1 0 0 1 0-2h2a1 1 0 0 1 .958.713L6.344 6H21a1 1 0 0 1 .937 1.352l-3 8A1 1 0 0 1 18 16zm-9.256-2h8.563l2.25-6H6.944z"/>
         </svg>
       </Link>
-      <Link to="/Admin">Ir al panel de administración</Link>
     </>
   )
 }
