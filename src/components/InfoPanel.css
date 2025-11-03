@@ -1,0 +1,40 @@
+.info-panel {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.9);
+    color: white;
+    font-family: "Poppins", sans-serif;
+}
+  
+.info-content {
+    text-align: center;
+    background: #222;
+    padding: 2rem;
+    border-radius: 12px;
+    border: 2px solid #ffd700;
+    box-shadow: 0 0 15px #ffd700;
+}
+
+.info-content h2 {
+    color: #ffd700;
+    margin-bottom: 1rem;
+}
+
+.info-content button {
+    margin-top: 1rem;
+    background-color: #ffd700;
+    color: #000;
+    font-weight: bold;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.info-content button:hover {
+    background-color: #fff;
+}
+  
