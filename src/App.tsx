@@ -14,6 +14,7 @@ import Login from './pages/Login/login';
 
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import Registro from './pages/Registro/registro';
 
 function App() {
   const [selectedCards, setSelectedCards] = useState<Set<number>>(new Set());
@@ -95,6 +96,8 @@ function App() {
 
           {/* ---------------------- Autenticación ---------------------- */}
           <Route path="/login" element={<Login />} />
+          <Route path="/registro" element={<Registro />} />
+
 
           {/* ---------------------- 404 ---------------------- */}
           <Route path="*" element={<h1>404: Página no encontrada</h1>} />

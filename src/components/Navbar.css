@@ -50,3 +50,17 @@
 .authActions .authButton:hover {
   background-color: #303f9f;
 }
+
+.userName {
+  margin-right: 1rem;
+  color: #ccc;
+  font-size: 1rem;
+}
+
+.logoutButton {
+  background-color: #e53935; /* Rojo elegante para cerrar sesión */
+}
+
+.logoutButton:hover {
+  background-color: #c62828;
+}

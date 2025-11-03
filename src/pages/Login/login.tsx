@@ -1,12 +1,13 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext"; // 👈 importamos el contexto
+import { useAuth } from "../../context/AuthContext";
 import "./Login.css";
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { login } = useAuth(); // 👈 obtenemos la función login del contexto
+  const { login } = useAuth();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -14,19 +15,18 @@ export default function Login() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    
-    // 🚀 Aquí podrías validar usuario/contraseña contra un backend o JSON server
-    if (form.email && form.password) {
-      login(); // ✅ activa el estado de autenticación global
-      navigate("/"); // 🔁 redirige al inicio (puedes cambiarlo a /Arena, /Coleccion, etc.)
-    } else {
-      alert("Por favor ingresa tus credenciales");
-    }
-};
 
-return (
+    const success = login(form.email, form.password);
+    if (success) {
+      navigate("/");
+    } else {
+      setError("Correo o contraseña incorrectos. Regístrate si no tienes cuenta.");
+    }
+  };
+
+  return (
     <div className="login-container">
-        <div className="login-card">
+      <div className="login-card">
         <h2 className="login-title">Inicio de Sesión</h2>
 
         <form onSubmit={handleSubmit}>
@@ -52,13 +52,18 @@ return (
             />
           </div>
 
+          {error && <p className="error-text">{error}</p>}
+
           <button type="submit" className="login-btn">
             Entrar
           </button>
         </form>
 
         <p className="login-footer">
-          ¿No tienes cuenta? <a href="/registro">Regístrate</a>
+          ¿No tienes cuenta?{" "}
+          <a onClick={() => navigate("/registro")} style={{ cursor: "pointer", color: "#ffd700" }}>
+            Regístrate
+          </a>
         </p>
       </div>
     </div>
