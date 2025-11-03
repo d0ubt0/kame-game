@@ -1,6 +1,5 @@
 // src/App.tsx
-
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { Inicio } from './pages/Inicio';
 import { Coleccion } from './pages/Coleccion';
 import { Arena } from './pages/Arena';
@@ -11,48 +10,97 @@ import ManageSingles from './pages/Admin/AdminCartas';
 import ManagePaquetes from './pages/Admin/AdminPaquetes';
 import ManageUsers from './pages/Admin/adminUsuario';
 import { useState } from 'react';
+import Login from './pages/Login/login';
 
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   const [selectedCards, setSelectedCards] = useState<Set<number>>(new Set());
 
+  const location = useLocation();
+  const hideNavbar = location.pathname === "/login" || location.pathname === "/registro";
+
   return (
-    <div className='main'>
-      {/* Aquí podrías poner un componente <Navbar> o <Header> 
-        que quieras que se muestre en TODAS las páginas.*/
-        <Navbar />
-      }
-      
-      {/* El componente <Routes> actúa como un 'switch' */}
-      <Routes>
-        {/* Define cada ruta. 
-          path="/" es la URL raíz (tu página de inicio).
-          element={} es el componente que se debe renderizar.
-        */}
-        <Route path="/" element={<Inicio selectedCards={selectedCards} setSelectedCards={setSelectedCards}/>} />
-        
-        {/* ruta para panel mi collección*/}
-        <Route path="/Coleccion" element={<Coleccion />} />
+    <AuthProvider>
+      <div className='main'>
+        {!hideNavbar && <Navbar />}
 
-        {/* ruta para panel Arena de Batallas*/}
-        <Route path="/Arena" element={<Arena />} />
-        
-        {/* ruta para panel de admin */}
-        <Route path="/Admin" element={<Admin />} />
+        <Routes>
+          {/* ---------------------- Página pública ---------------------- */}
+          <Route
+            path="/"
+            element={<Inicio selectedCards={selectedCards} setSelectedCards={setSelectedCards} />}
+          />
 
-        {/*ruta para panel de admin */}
-        <Route path="/Carrito" element={<Carrito selectedCards={selectedCards}/>} />
+          {/* ---------------------- Rutas protegidas ---------------------- */}
+          <Route
+            path="/Coleccion"
+            element={
+              <ProtectedRoute>
+                <Coleccion />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Carrito"
+            element={
+              <ProtectedRoute>
+                <Carrito selectedCards={selectedCards} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Arena"
+            element={
+              <ProtectedRoute>
+                <Arena />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route path="/Admin/Cartas" element={< ManageSingles />} />
+          {/* --------------------- Área de Admin --------------------- */}
+          <Route
+            path="/Admin"
+            element={
+              <ProtectedRoute>
+                <Admin />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Admin/Cartas"
+            element={
+              <ProtectedRoute>
+                <ManageSingles />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Admin/Paquetes"
+            element={
+              <ProtectedRoute>
+                <ManagePaquetes />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Admin/Usuarios"
+            element={
+              <ProtectedRoute>
+                <ManageUsers />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route path="/Admin/Paquetes" element={< ManagePaquetes />} />
+          {/* ---------------------- Autenticación ---------------------- */}
+          <Route path="/login" element={<Login />} />
 
-        <Route path="/Admin/Usuarios" element={< ManageUsers />} />
-
-        {/* Aquí podrías añadir una ruta "catch-all" para páginas no encontradas */}
-        <Route path="*" element={<h1>404: Página no encontrada</h1>} />
-      </Routes>
-    </div>
+          {/* ---------------------- 404 ---------------------- */}
+          <Route path="*" element={<h1>404: Página no encontrada</h1>} />
+        </Routes>
+      </div>
+    </AuthProvider>
   );
 }
 
