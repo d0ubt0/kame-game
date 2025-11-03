@@ -8,7 +8,7 @@ export function Navbar() {
 
   const handleLogout = () => {
     logout();
-    navigate("/"); // redirige al inicio después de cerrar sesión
+    navigate("/"); // esto redirige al inicio después de cerrar sesión
   };
 
   return (
