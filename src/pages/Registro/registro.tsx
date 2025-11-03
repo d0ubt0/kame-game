@@ -1,7 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import "./Registro.css";
+import "./registro.css";
 
 export default function Registro() {
   const [form, setForm] = useState({ email: "", password: "", confirm: "" });
@@ -20,16 +20,16 @@ export default function Registro() {
     setSuccess("");
 
     if (form.password !== form.confirm) {
-      setError("⚠️ Las contraseñas no coinciden.");
+      setError("Las contraseñas no coinciden.");
       return;
     }
 
     const ok = register(form.email, form.password);
     if (ok) {
-      setSuccess("✅ Usuario registrado con éxito. Redirigiendo al login...");
+      setSuccess("Usuario registrado con éxito. Redirigiendo al login...");
       setTimeout(() => navigate("/login"), 2000);
     } else {
-      setError("⚠️ El correo ya está registrado.");
+      setError("El correo ya está registrado.");
     }
   };
 
@@ -76,7 +76,7 @@ export default function Registro() {
           {success && <p className="success-text">{success}</p>}
 
           <button type="submit" className="registro-btn">
-            🔮 Registrarme
+            Registrarme
           </button>
         </form>
 
