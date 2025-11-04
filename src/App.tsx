@@ -47,7 +47,7 @@ function App() {
             path="/Carrito"
             element={
               <ProtectedRoute>
-                <Carrito selectedCards={selectedCards} />
+                <Carrito selectedCards={selectedCards} setSelectedCards={setSelectedCards} />
               </ProtectedRoute>
             }
           />
