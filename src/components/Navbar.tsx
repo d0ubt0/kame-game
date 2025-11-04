@@ -27,7 +27,7 @@ export function Navbar() {
       <div className="authActions">
         {isAuthenticated ? (
           <>
-            <span className="userName">Hola, {user?.split("@")[0]}</span>
+            <span className="userName">Hola, {user?.username}</span>
             <button onClick={handleLogout} className="authButton logoutButton">
               Cerrar Sesión
             </button>

@@ -1,117 +1,166 @@
-// src/components/Admin/User/UserForm.tsx
-import React, { useState, useEffect } from 'react';
-// Asumo que 'User' y 'UserFormData' están definidos en tus tipos
-import type { Usuario, UsuarioFormData } from '../../../types/yugioh';
+// src/components/Admin/Usuario/UsuarioForm.tsx
+import React, { useState, useEffect } from "react";
+import type { Usuario, UsuarioFormData } from "../../../types/yugioh";
 
-// Props que espera el formulario
-interface UserFormProps {
+interface UsuarioFormProps {
   initialData: Usuario | null;
   onSubmit: (formData: UsuarioFormData) => void;
   onCancel?: () => void;
 }
 
-// Estado inicial del formulario
 const defaultFormState: UsuarioFormData = {
-  username: '',
-  email: '',
-  password: '', // La contraseña solo se usa al crear
-  role: 'user'  // Rol por defecto
+  username: "",
+  email: "",
+  password: "",
+  role: "cliente",
 };
 
-const UserForm: React.FC<UserFormProps> = ({ initialData, onSubmit, onCancel }) => {
-
+const UsuarioForm: React.FC<UsuarioFormProps> = ({
+  initialData,
+  onSubmit,
+  onCancel,
+}) => {
   const [formData, setFormData] = useState<UsuarioFormData>(defaultFormState);
+  const [error, setError] = useState<string | null>(null);
   const isEditing = Boolean(initialData);
-  const title = isEditing ? 'Editar Usuario' : 'Crear Nuevo Usuario';
+  const title = isEditing ? "Editar Usuario" : "Crear Nuevo Usuario";
 
+  // === Cargar datos iniciales ===
   useEffect(() => {
     if (isEditing && initialData) {
-      // Al editar, cargamos los datos PERO OMITIMOS la contraseña
       setFormData({
         username: initialData.username,
         email: initialData.email,
         role: initialData.role,
-        password: '' // El campo de contraseña permanece vacío
+        password: "",
       });
     } else {
       setFormData(defaultFormState);
     }
+    setError(null);
   }, [initialData, isEditing]);
 
-  // Manejador de cambios genérico
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  // === Manejar cambios en los inputs ===
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
+  // === Enviar formulario ===
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    if (isEditing) {
-      // Si estamos editando, no queremos enviar la contraseña
-      // (incluso si el usuario escribió algo por error)
-      const { password, ...updateData } = formData;
-      onSubmit(updateData);
+    setError(null);
+
+    const existingUsers = JSON.parse(localStorage.getItem("users") || "[]");
+
+    // Si se crea o se edita a otro usuario con el mismo correo
+    const emailExists = existingUsers.some(
+      (u: Usuario) =>
+        u.email === formData.email &&
+        (!isEditing || u.id !== initialData?.id)
+    );
+
+    if (emailExists) {
+      setError("⚠️ Ya existe un usuario registrado con este correo.");
+      return;
+    }
+
+    const payload: UsuarioFormData = {
+      ...formData,
+      username: formData.email.split("@")[0], // generado automáticamente
+    };
+
+    if (isEditing && !formData.password) {
+      const { password, ...rest } = payload;
+      onSubmit(rest);
     } else {
-      // Si estamos creando, enviamos todo el formulario
-      onSubmit(formData);
+      onSubmit(payload);
     }
   };
 
   return (
-    <div style={{ border: '1px solid #ccc', padding: '16px', borderRadius: '8px', marginTop: '16px' }}>
-      <h3 style={{ fontSize: '2rem', color: '#E6C200'}}>{title}</h3>
+    <div
+      style={{
+        border: "1px solid #ccc",
+        padding: "16px",
+        borderRadius: "8px",
+        marginTop: "16px",
+      }}
+    >
+      <h3 style={{ fontSize: "2rem", color: "#E6C200" }}>{title}</h3>
+
       <form onSubmit={handleSubmit}>
-
-        <div style={{ marginBottom: '12px' }}>
-          <label htmlFor="username">Nombre de Usuario:</label><br />
-          <input type="text" id="username" name="username" value={formData.username} onChange={handleChange} required style={{ width: '300px' }} />
+        {/* Campo de correo */}
+        <div style={{ marginBottom: "12px" }}>
+          <label htmlFor="email">Correo electrónico:</label>
+          <br />
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            style={{ width: "300px" }}
+          />
         </div>
 
-        <div style={{ marginBottom: '12px' }}>
-          <label htmlFor="email">Email:</label><br />
-          <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required style={{ width: '300px' }} />
-        </div>
-
-        {/* --- CAMPO DE CONTRASEÑA (SOLO AL CREAR) --- */}
+        {/* Campo de contraseña (solo al crear) */}
         {!isEditing && (
-          <div style={{ marginBottom: '12px' }}>
-            <label htmlFor="password">Contraseña:</label><br />
-            <input 
-              type="password" 
-              id="password" 
-              name="password" 
-              value={formData.password} 
-              onChange={handleChange} 
-              required={!isEditing} // Requerido solo al crear
-              style={{ width: '300px' }} 
+          <div style={{ marginBottom: "12px" }}>
+            <label htmlFor="password">Contraseña:</label>
+            <br />
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              style={{ width: "300px" }}
             />
           </div>
         )}
 
-        {/* --- CAMPO DE ROL --- */}
-        <div style={{ marginBottom: '12px' }}>
-          <label htmlFor="role">Rol de Usuario:</label><br />
-          <select 
-            id="role" 
-            name="role" 
-            value={formData.role} 
+        {/* Campo de rol */}
+        <div style={{ marginBottom: "12px" }}>
+          <label htmlFor="role">Rol:</label>
+          <br />
+          <select
+            id="role"
+            name="role"
+            value={formData.role}
             onChange={handleChange}
-            style={{ width: '300px' }}
+            style={{ width: "300px" }}
           >
-            <option value="user">Usuario</option>
+            <option value="cliente">Cliente</option>
             <option value="admin">Administrador</option>
           </select>
         </div>
 
+        {/* Mostrar error si el correo ya existe */}
+        {error && (
+          <p style={{ color: "red", marginTop: "10px", fontWeight: "bold" }}>
+            {error}
+          </p>
+        )}
+
         {/* Botones */}
-        <div style={{ marginTop: '20px' }}>
-          <button type="submit">{isEditing ? 'Actualizar' : 'Guardar'}</button>
+        <div style={{ marginTop: "20px" }}>
+          <button type="submit">
+            {isEditing ? "Actualizar" : "Guardar"}
+          </button>
           {onCancel && (
-            <button type="button" onClick={onCancel} style={{ marginLeft: '8px' }}>
+            <button
+              type="button"
+              onClick={onCancel}
+              style={{ marginLeft: "8px" }}
+            >
               Cancelar
             </button>
           )}
@@ -119,6 +168,6 @@ const UserForm: React.FC<UserFormProps> = ({ initialData, onSubmit, onCancel }) 
       </form>
     </div>
   );
-}
+};
 
-export default UserForm;
+export default UsuarioForm;

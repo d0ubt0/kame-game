@@ -11,7 +11,7 @@ import ManagePaquetes from './pages/Admin/AdminPaquetes';
 import ManageUsers from './pages/Admin/adminUsuario';
 import { useState } from 'react';
 import Login from './pages/Login/login';
-
+import AdminRoute from './components/Admin/AdminRoute';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Registro from './pages/Registro/registro';
@@ -60,37 +60,37 @@ function App() {
             }
           />
 
-          {/* --------------------- Área de Admin --------------------- */}
+{/* --------------------- Área de Admin --------------------- */}
           <Route
             path="/Admin"
             element={
-              <ProtectedRoute>
+              <AdminRoute>
                 <Admin />
-              </ProtectedRoute>
+              </AdminRoute>
             }
           />
           <Route
             path="/Admin/Cartas"
             element={
-              <ProtectedRoute>
+              <AdminRoute>
                 <ManageSingles />
-              </ProtectedRoute>
+              </AdminRoute>
             }
           />
           <Route
             path="/Admin/Paquetes"
             element={
-              <ProtectedRoute>
+              <AdminRoute>
                 <ManagePaquetes />
-              </ProtectedRoute>
+              </AdminRoute>
             }
           />
           <Route
             path="/Admin/Usuarios"
             element={
-              <ProtectedRoute>
+              <AdminRoute>
                 <ManageUsers />
-              </ProtectedRoute>
+              </AdminRoute>
             }
           />
 

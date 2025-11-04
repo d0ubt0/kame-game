@@ -1,15 +1,12 @@
+// src/context/AuthContext.tsx
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
-
-interface User {
-  email: string;
-  password: string;
-}
+import type { Usuario } from "../types/yugioh";
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  user: string | null;
-  users: User[];
+  user: Usuario | null;
+  users: Usuario[];
   login: (email: string, password: string) => boolean;
   logout: () => void;
   register: (email: string, password: string) => boolean;
@@ -17,24 +14,59 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const DEFAULT_ADMIN: Usuario = {
+  id: 1,
+  username: "admin",
+  email: "admin@admin.com",
+  password: "admin123", // 👈 contraseña por defecto
+  role: "admin",
+};
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<string | null>(null);
-  const [users, setUsers] = useState<User[]>([]);
+  const [user, setUser] = useState<Usuario | null>(null);
+  const [users, setUsers] = useState<Usuario[]>([]);
 
-  // aca se carga la informacion del localstorage
+  // === Cargar usuarios desde localStorage ===
   useEffect(() => {
-    const savedUsers = localStorage.getItem("users");
-    const savedUser = localStorage.getItem("user");
+    try {
+      const savedUsers = localStorage.getItem("users");
+      const savedUser = localStorage.getItem("user");
 
-    if (savedUsers) setUsers(JSON.parse(savedUsers));
-    if (savedUser) {
-      setUser(savedUser);
-      setIsAuthenticated(true);
+      if (savedUsers) {
+        const parsedUsers = JSON.parse(savedUsers);
+        if (Array.isArray(parsedUsers)) {
+          // Si no hay admin en el array, agregarlo
+          const hasAdmin = parsedUsers.some(
+            (u: Usuario) => u.role === "admin"
+          );
+          const updatedUsers = hasAdmin
+            ? parsedUsers
+            : [...parsedUsers, DEFAULT_ADMIN];
+
+          setUsers(updatedUsers);
+          localStorage.setItem("users", JSON.stringify(updatedUsers));
+        }
+      } else {
+        // No había usuarios en localStorage → crear lista con el admin por defecto
+        setUsers([DEFAULT_ADMIN]);
+        localStorage.setItem("users", JSON.stringify([DEFAULT_ADMIN]));
+      }
+
+      // Cargar usuario autenticado (si hay uno guardado)
+      if (savedUser) {
+        const parsedUser = JSON.parse(savedUser);
+        setUser(parsedUser);
+        setIsAuthenticated(true);
+      }
+    } catch (error) {
+      console.error("❌ Error al cargar usuarios desde localStorage:", error);
+      setUsers([DEFAULT_ADMIN]);
+      localStorage.setItem("users", JSON.stringify([DEFAULT_ADMIN]));
     }
   }, []);
 
-  // logica de inicio de sesion
+  // === Iniciar sesión ===
   const login = (email: string, password: string): boolean => {
     const foundUser = users.find(
       (u) => u.email === email && u.password === password
@@ -42,25 +74,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     if (foundUser) {
       setIsAuthenticated(true);
-      setUser(email);
-      localStorage.setItem("user", email);
+      setUser(foundUser);
+      localStorage.setItem("user", JSON.stringify(foundUser));
       return true;
     }
     return false;
   };
 
-  // registro de sesion
+  // === Registrar nuevo usuario ===
   const register = (email: string, password: string): boolean => {
     const exists = users.some((u) => u.email === email);
     if (exists) return false;
 
-    const updatedUsers = [...users, { email, password }];
+    const username = email.split("@")[0];
+
+    const newUser: Usuario = {
+      id: Date.now(),
+      username,
+      email,
+      password,
+      role: "cliente", // 👈 todos los nuevos son clientes
+    };
+
+    const updatedUsers = [...users, newUser];
     setUsers(updatedUsers);
     localStorage.setItem("users", JSON.stringify(updatedUsers));
     return true;
   };
 
-  // cerrar la sesion del localstorage
+  // === Cerrar sesión ===
   const logout = () => {
     setIsAuthenticated(false);
     setUser(null);

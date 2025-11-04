@@ -31,7 +31,7 @@ export interface Usuario {
   username: string;
   email: string;
   password?: string; // Opcional para edición
-  role: 'admin' | 'user';
+  role: 'admin' | 'cliente';
 }
 
 export type UsuarioFormData = Omit<Usuario, 'id'>;
