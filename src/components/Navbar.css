@@ -1,17 +1,19 @@
-
 .navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 2rem;
-  background-color: #1a1a1a;
-  color: white;
+  padding: 0.5rem;
+  background: linear-gradient(to right, black 1%, #1a1a1a 99%)
+}
+
+.logo{
+  background-color: black;
 }
 
 .logo a {
   font-size: 1.8rem;
   font-weight: bold;
-  color: white;
+  color: #ffcc00;
   text-decoration: none;
 }
 
@@ -20,23 +22,73 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 2rem;
+  gap: 1rem;
+  align-items: center;
 }
 
 .navLinks a {
-  color: #ccc;
+  color: #ffcc00;
   text-decoration: none;
   font-size: 1rem;
   transition: color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .navLinks a:hover {
+  text-shadow: 
+        0 0 10px #ffcc00, 
+        0 0 20px #ffcc00,  
+        0 0 30px #ffcc00; 
   color: white;
 }
 
+.navLinks a img:hover{
+  transform: scale(1.1);
+}
+
+.navLinks a .icono-logo {
+  width: 90px;
+  height: 90px;
+}
+
+.navLinks a .icono-coleccion {
+  width: 25px;
+  height: 35px;
+  object-fit: cover;
+  border-radius: 1px;
+  border: 1px solid #ffcc00;
+
+}
+
+.navLinks a .icono-arena {
+  width: 35px;
+  height: 35px;
+}
+
+.navLinks a .icono-admin {
+  width: 35px;
+  height: 35px;
+}
+.navLinks a .icono-carrito {
+  width: 35px;
+  height: 35px;
+}
+
+.icono-logout, .icono-login {
+  width: 40px;
+  height: 40px;
+}
+.icono-logout:hover, .icono-login:hover {
+  transform: scale(1.1);
+}
+
+
+
 .authActions .authButton {
-  background-color: #3f51b5; /* Un color azul como en el botón */
-  color: white;
+  background-color: transparent; /* Un color azul como en el botón */
+  color: #0033FF;
   border: none;
   padding: 0.6rem 1.2rem;
   border-radius: 5px;
@@ -47,20 +99,53 @@
   transition: background-color 0.3s ease;
 }
 
-.authActions .authButton:hover {
-  background-color: #303f9f;
+.authButton:hover {
+  text-shadow: 
+        0 0 10px #0033FF, 
+        0 0 20px #0033FF,  
+        0 0 30px #0033FF; 
+  color: #fff;
 }
 
 .userName {
   margin-right: 1rem;
-  color: #ccc;
+  color: #ffcc00;
   font-size: 1rem;
 }
 
-.logoutButton {
-  background-color: #e53935; /* Rojo elegante para cerrar sesión */
+.authActions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.authButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.logoutButton:hover {
-  background-color: #c62828;
+@media (max-width:  800px) {
+  span{
+    display: none;
+  }
+
+  .navLinks{
+    gap: 2rem;
+  }
+
+  
+
 }
+@media (max-width: 768px) {
+  .navbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+  }
+}
+
+
+
+
