@@ -10,7 +10,6 @@ export function Footer() {
                 </div>
 
                 
-
                 <div className="footerSocial">
                 <a href="https://facebook.com" target="_blank" rel="noreferrer">
                     <img src="../public/facebook.png" alt="facebook" />

@@ -109,7 +109,7 @@ export function Carrito({selectedCards, setSelectedCards}:
               />
               ))}
             <div className="carrito-total">
-              <h3>Total:</h3>
+              <h3>Total a pagar:</h3>
               <p>${total.toLocaleString()}</p>
             </div>
 

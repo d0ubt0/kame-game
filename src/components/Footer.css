@@ -7,7 +7,7 @@ footer{
     align-items: center;
 }
 
-p{
+footer p{
     margin-bottom: 0;
 }
 
@@ -33,7 +33,6 @@ p{
 .footerSocial img:hover{
     transform: scale(1.1);
 }
-
 
 
 @media (max-width: 768px) {

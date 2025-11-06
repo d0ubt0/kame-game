@@ -21,3 +21,21 @@
 .panel-formulario {
   padding: 5% 15%;
 }
+
+
+.carrito-total{
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content;
+  gap: 1rem;
+  align-items: center;
+  display: flex;
+  padding: 1rem;
+  border: 1px solid #ffcc00;
+  color: white;
+  height: auto;
+}
+
+.carrito-total p{
+    color: #ffcc00;
+}
