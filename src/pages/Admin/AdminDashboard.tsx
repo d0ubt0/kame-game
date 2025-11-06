@@ -1,12 +1,12 @@
 // src/pages/PaginaAdmin.tsx
 import { PageTitle } from '../../components/PageTitle';
 import { Link } from 'react-router-dom';
+import "./AdminDashboard.css"
 
 export function Admin() {
   return (
-    <div>
+    <div className='admin'>
       <PageTitle title="Panel de Administración" />
-      <p>Aquí es donde gestionarás todo el contenido.</p>
       <div>
         <Link to="/Admin/Cartas">Gestionar Cartas</Link>
         <br />
@@ -17,7 +17,7 @@ export function Admin() {
 
       
       
-      <Link to="/">Volver al Inicio</Link>
+      
     </div>
   );
 }

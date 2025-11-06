@@ -15,6 +15,7 @@ import AdminRoute from './components/Admin/AdminRoute';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Registro from './pages/Registro/registro';
+import { Footer } from './components/Footer';
 
 function App() {
   const [selectedCards, setSelectedCards] = useState<Set<number>>(new Set());
@@ -102,6 +103,7 @@ function App() {
           {/* ---------------------- 404 ---------------------- */}
           <Route path="*" element={<h1>404: Página no encontrada</h1>} />
         </Routes>
+        {!hideNavbar && <Footer/>}
       </div>
     </AuthProvider>
   );

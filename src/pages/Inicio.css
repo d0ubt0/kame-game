@@ -41,3 +41,13 @@ img{
   background-color: gold;
   border-radius: 2px;
 }
+
+.CartButton {
+  margin-bottom: 7rem;
+}
+
+@media (max-width: 768px) {
+  .CartButton {
+    margin-bottom: 280px; /* espacio para que no se solape con el navbar fijo */
+  }
+}

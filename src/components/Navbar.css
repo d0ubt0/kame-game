@@ -125,7 +125,7 @@
 }
 
 @media (max-width:  800px) {
-  span{
+  .navbar span{
     display: none;
   }
 
