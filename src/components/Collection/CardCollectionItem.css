@@ -1,4 +1,5 @@
 .CardCollectionItemContainer {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -51,4 +52,20 @@
   background: rgba(255, 255, 255, 0.1);
   padding: 0.3rem 0.8rem;
   border-radius: 8px;
+}
+
+.QuantityText {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: #eee;
+  color: black;
+  font-weight: bold;
+  font-size: 1.3rem;
+  padding: 4px 8px;
+  border: #b89b00 solid 3px;
+  border-radius: 9999px;
+  z-index: 2;
+  min-width:45px;
+  text-align: center;  
 }

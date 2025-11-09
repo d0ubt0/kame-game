@@ -41,7 +41,7 @@ export function Coleccion() {
       <div className='CardsContainer'>
         {
           cartasColeccion.map((value, index) =>{
-            return <CardCollectionItem key={index} name={value.name} description={value.description} attack={value.attack} defense={value.defense} image={value.image}/>
+            return <CardCollectionItem key={index} name={value.name} description={value.description} attack={value.attack} defense={value.defense} image={value.image} cantidad={value.cantidad}/>
           })
         }
       </div>
