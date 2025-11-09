@@ -26,7 +26,11 @@ function App() {
   }, []);
 
   // ✅ 2. Estado compartido de cartas seleccionadas
-  const [selectedCards, setSelectedCards] = useState<Set<number>>(new Set());
+  const [selectedCards, setSelectedCards] = useState<Set<number>>(() => {
+  const stored = localStorage.getItem('selectedCards');
+  return stored ? new Set(JSON.parse(stored)) : new Set();
+});
+
 
   // ✅ 3. Ocultar Navbar y Footer en login y registro
   const location = useLocation();

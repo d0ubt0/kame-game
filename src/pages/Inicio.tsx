@@ -25,7 +25,7 @@ export function Inicio({selectedCards, setSelectedCards}: {
     } else {
       previousSelectedCards.add(id);
     }
-
+    localStorage.setItem('selectedCards', JSON.stringify(Array.from(previousSelectedCards)));
     setSelectedCards(previousSelectedCards);
   }
 
