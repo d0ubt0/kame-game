@@ -1,7 +1,7 @@
 // src/components/singles/SingleForm.tsx
 import React, { useState, useEffect } from 'react';
 // Importamos los tipos actualizados
-import type { Carta, CartaFormData } from '../../../types/yugioh';
+import type { Carta, CartaFormData } from '../../../db/yugioh';
 
 // Props que espera el formulario
 interface SingleFormProps {

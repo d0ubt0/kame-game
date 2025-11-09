@@ -1,7 +1,7 @@
 // src/components/Admin/Paquete/PaqueteForm.tsx
 import React, { useState, useEffect } from 'react';
 // Importamos los tipos de Paquete y Carta
-import type { Paquete, PaqueteFormData, Carta } from '../../../types/yugioh';
+import type { Paquete, PaqueteFormData, Carta } from '../../../db/yugioh';
 
 // Props que espera el formulario
 interface PaqueteFormProps {

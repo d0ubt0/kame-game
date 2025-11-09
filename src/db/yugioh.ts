@@ -25,16 +25,45 @@ export interface Paquete {
 
 // 2. Definimos el tipo para los datos del formulario (todo menos el 'id')
 export type PaqueteFormData = Omit<Paquete, 'id'>;
-
+export interface ColeccionItem {
+  cartaId: number;
+  cantidad: number;
+}
 export interface Usuario {
   id: number;
   username: string;
   email: string;
   password?: string; // Opcional para edición
   role: 'admin' | 'cliente';
+  coleccion?: ColeccionItem[];
 }
 
 export type UsuarioFormData = Omit<Usuario, 'id'>;
 
 // Database
 
+export interface CartaEnJuego {
+  id: number;
+  name: string;
+  attack: number;
+  defense: number;
+  hp: number; // vida actual (igual a defense al inicio)
+  image: string;
+  slot?: number; // posición en el tablero 0–3
+}
+
+export interface Jugador {
+  nombre: string;
+  vida: number; // empieza en 8000
+  baraja: CartaEnJuego[];
+  mano: CartaEnJuego[];
+  campo: (CartaEnJuego | null)[];
+}
+
+export interface EstadoBatalla {
+  jugador: Jugador;
+  cpu: Jugador;
+  turno: "jugador" | "cpu";
+  ronda: number;
+  log: string[];
+}

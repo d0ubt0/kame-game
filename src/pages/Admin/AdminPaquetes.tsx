@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import PaqueteTable from '../../components/Admin/Paquete/PaqueteTable';
 import PaqueteForm from '../../components/Admin/Paquete/PaqueteForm';
 import { PageTitle } from '../../components/PageTitle';
-import type { Carta, Paquete, PaqueteFormData } from '../../types/yugioh';
+import type { Carta, Paquete, PaqueteFormData } from '../../db/yugioh';
 
 const LOCAL_STORAGE_CARTAS = 'cartas';
 const LOCAL_STORAGE_PAQUETES = 'paquetes';

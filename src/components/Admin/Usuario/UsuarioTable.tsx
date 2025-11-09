@@ -1,6 +1,6 @@
 // src/components/Admin/Usuario/UsuarioTable.tsx
 import React from "react";
-import type { Usuario } from "../../../types/yugioh";
+import type { Usuario } from "../../../db/yugioh";
 
 interface UsuarioTableProps {
   users: Usuario[];

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import UsuarioTable from "../../components/Admin/Usuario/UsuarioTable";
 import UsuarioForm from "../../components/Admin/Usuario/UsuarioForm";
 import { PageTitle } from "../../components/PageTitle";
-import type { Usuario, UsuarioFormData } from "../../types/yugioh";
+import type { Usuario, UsuarioFormData } from "../../db/yugioh";
 
 const LOCAL_STORAGE_USERS = "users";
 

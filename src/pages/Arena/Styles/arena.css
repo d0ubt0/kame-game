@@ -1,0 +1,362 @@
+/* === Fondo y Layout general === */
+.arena-container {
+  min-height: 100vh;
+  background-image: url("/arenaback.png");
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  color: #fff;
+  overflow: hidden;
+}
+
+.arena-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 0;
+}
+
+/* === Fondo y Layout general === */
+.arena-content {
+  position: relative;
+  z-index: 1;
+  padding: 1rem; /* antes 2rem */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+  
+}
+
+
+/* === CPU y Jugador === */
+.player-section,
+.cpu-section {
+  text-align: center;
+}
+
+/* === Campos y Slots === */
+/* === Campos y Slots === */
+.campo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px; /* antes 12px */
+  margin-top: 0.4rem; /* antes 1rem */
+}
+
+
+.slot {
+  width: 100px;
+  height: 140px;
+  border: 1px dashed #888;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+}
+
+.slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.slot-info {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  font-size: 0.7rem;
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 5px;
+}
+
+/* === Mano y Baraja === */
+/* === Mano y Baraja === */
+.mano-container {
+  margin-top: 1rem; /* antes 2rem */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* antes 16px */
+  flex-wrap: wrap;
+}
+
+.mano {
+  display: flex;
+  gap: 8px;
+}
+
+.baraja {
+  text-align: center;
+}
+
+.baraja img {
+  width: 70px;
+  height: 100px;
+}
+
+.baraja p {
+  margin-top: 2px; /* antes 4px */
+}
+
+/* === Cartas === */
+.carta {
+  width: 90px;
+  height: 125px;
+  border: 2px solid #e6c200;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.carta-seleccionada {
+  border: 3px solid #00ffff;
+}
+
+.carta img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carta-info {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  font-size: 0.7rem;
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 5px;
+}
+
+/* === Botón de turno === */
+.turno-btn {
+  margin: 1rem auto;
+  background-color: #e6c200;
+  border: none;
+  color: #000;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  display: block;
+}
+
+.turno-btn:hover {
+  background-color: #ffd700;
+}
+
+/* === Animaciones de combate === */
+@keyframes shake {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(4px, -4px); }
+  50% { transform: translate(-4px, 4px); }
+  75% { transform: translate(4px, 4px); }
+}
+
+@keyframes hit {
+  0% { filter: brightness(2); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; transform: scale(0.8); }
+}
+
+.slot.ataque {
+  animation: shake 0.3s ease-in-out;
+}
+
+.slot.daño {
+  animation: hit 0.4s ease-in-out;
+}
+
+.slot.muerte {
+  animation: fadeOut 0.6s ease-in forwards;
+}
+
+.turno-indicador {
+  text-align: center;
+  font-weight: bold;
+  color: #ffd700;
+  margin-top: 1rem;
+  font-size: 1.2rem;
+}
+
+.turno-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #b3a200;
+}
+
+/* === Perfil Jugador / CPU === */
+.perfil-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  gap: 10px;
+}
+
+.perfil-imagen {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  border: 3px solid #e6c200;
+  object-fit: contain;
+  background: rgba(0, 0, 0, 0.5);
+  margin-bottom: 0.6rem;
+  border-radius: 50%;
+}
+.mid {
+  display: flex;
+  flex-direction: row;
+  align-items: center;      /* Centra verticalmente */
+  justify-content: center;  /* Centra horizontalmente */
+  margin: 0;
+
+  /* --- Añade esto --- */
+  width: 100%; 
+
+  /* Opcional: Añade espacio entre el texto y el botón */
+  gap: 1.5rem; /* o 20px, lo que prefieras */
+}
+
+/* === Perfil activo/inactivo === */
+.turno-activo .perfil-imagen {
+  background: radial-gradient(circle, #ffd700 0%, #e6c200 80%);
+  box-shadow: 0 0 15px rgba(255, 230, 100, 0.8);
+  transition: all 0.3s ease-in-out;
+}
+
+.turno-inactivo .perfil-imagen {
+  background: radial-gradient(circle, #555 0%, #333 80%);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease-in-out;
+  filter: grayscale(0.4);
+}
+
+/* === Espadita decorativa === */
+.espada {
+  margin-left: 6px;
+  font-size: 1.2rem;
+  color: #ffd700;
+  text-shadow: 0 0 4px #000;
+}
+
+/* === Animación de daño directo al retrato === */
+.perfil-daño {
+  animation: perfilHit 0.4s ease-in-out;
+}
+
+@keyframes perfilHit {
+  0% { filter: brightness(2); transform: scale(1.05); }
+  50% { filter: brightness(1.2); transform: scale(0.95); }
+  100% { filter: brightness(1); transform: scale(1); }
+}
+/* === Botón de rendición === */
+.rendirse-btn {
+  margin: 0.4rem auto;
+  background-color: #ef4444;
+  border: none;
+  color: #fff;
+  font-weight: bold;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+  display: block;
+}
+
+.rendirse-btn:hover {
+  background-color: #dc2626;
+  transform: scale(1.03);
+}
+
+.rendirse-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+/* === Overlay de resultado final === */
+.resultado-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.resultado-card {
+  background: rgba(30, 30, 30, 0.9);
+  border: 2px solid #e6c200;
+  border-radius: 12px;
+  padding: 2rem 3rem;
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+  max-width: 400px;
+  animation: zoomIn 0.3s ease-in-out;
+}
+
+.resultado-card h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1.2rem;
+  color: #ffd700;
+}
+
+.resultado-botones {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.btn-volver,
+.btn-salir {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-volver {
+  background-color: #10b981; /* verde */
+  color: white;
+}
+
+.btn-volver:hover {
+  background-color: #059669;
+  transform: scale(1.05);
+}
+
+.btn-salir {
+  background-color: #ef4444; /* rojo */
+  color: white;
+}
+
+.btn-salir:hover {
+  background-color: #dc2626;
+  transform: scale(1.05);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

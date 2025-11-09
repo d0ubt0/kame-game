@@ -2,7 +2,7 @@
 import React from 'react';
 // Importamos los tipos necesarios (asumiendo que están en /types/yugioh.ts)
 import type { Paquete }
-from '../../../types/yugioh';
+from '../../../db/yugioh';
 
 // Props que espera la tabla
 interface PaqueteTableProps {

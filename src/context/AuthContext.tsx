@@ -1,7 +1,7 @@
 // src/context/AuthContext.tsx
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
-import type { Usuario } from "../types/yugioh";
+import type { Usuario } from "../db/yugioh";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -13,14 +13,6 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-const DEFAULT_ADMIN: Usuario = {
-  id: 1,
-  username: "admin",
-  email: "admin@admin.com",
-  password: "admin123", // 👈 contraseña por defecto
-  role: "admin",
-};
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -36,21 +28,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (savedUsers) {
         const parsedUsers = JSON.parse(savedUsers);
         if (Array.isArray(parsedUsers)) {
-          // Si no hay admin en el array, agregarlo
-          const hasAdmin = parsedUsers.some(
-            (u: Usuario) => u.role === "admin"
-          );
-          const updatedUsers = hasAdmin
-            ? parsedUsers
-            : [...parsedUsers, DEFAULT_ADMIN];
-
-          setUsers(updatedUsers);
-          localStorage.setItem("users", JSON.stringify(updatedUsers));
+          setUsers(parsedUsers);
+        } else {
+          console.warn("⚠️ Datos de usuarios inválidos. Reiniciando...");
+          localStorage.removeItem("users");
+          setUsers([]);
         }
       } else {
-        // No había usuarios en localStorage → crear lista con el admin por defecto
-        setUsers([DEFAULT_ADMIN]);
-        localStorage.setItem("users", JSON.stringify([DEFAULT_ADMIN]));
+        setUsers([]); // sin usuarios iniciales, se crea vacío
       }
 
       // Cargar usuario autenticado (si hay uno guardado)
@@ -61,8 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (error) {
       console.error("❌ Error al cargar usuarios desde localStorage:", error);
-      setUsers([DEFAULT_ADMIN]);
-      localStorage.setItem("users", JSON.stringify([DEFAULT_ADMIN]));
+      setUsers([]);
     }
   }, []);
 
@@ -93,7 +77,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       username,
       email,
       password,
-      role: "cliente", // 👈 todos los nuevos son clientes
+      role: "cliente",
     };
 
     const updatedUsers = [...users, newUser];

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { CardStoreItem } from '../components/Store/CardStoreItem';
 import { PageTitle } from '../components/PageTitle';
 import { useState } from 'react';
-import type { Carta } from '../types/yugioh';
+import type { Carta } from '../db/yugioh';
 import './Inicio.css';
 import { placeholderCards, placeholderPacks } from '../db/db';
 

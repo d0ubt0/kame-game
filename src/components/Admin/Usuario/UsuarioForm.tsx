@@ -1,6 +1,6 @@
 // src/components/Admin/Usuario/UsuarioForm.tsx
 import React, { useState, useEffect } from "react";
-import type { Usuario, UsuarioFormData } from "../../../types/yugioh";
+import type { Usuario, UsuarioFormData } from "../../../db/yugioh";
 
 interface UsuarioFormProps {
   initialData: Usuario | null;

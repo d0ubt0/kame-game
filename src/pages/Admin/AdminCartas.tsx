@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import SingleTable from '../../components/Admin/Carta/CartaTable';
 import SingleForm from '../../components/Admin/Carta/CartaForm';
 import { PageTitle } from '../../components/PageTitle';
-import type { Carta, CartaFormData } from '../../types/yugioh';
+import type { Carta, CartaFormData } from '../../db/yugioh';
 
 const LOCAL_STORAGE_KEY = 'cartas';
 
