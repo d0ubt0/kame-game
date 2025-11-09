@@ -360,3 +360,57 @@
   from { transform: scale(0.8); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
+/* === Indicador "Colocar aquí" en slots vacíos === */
+.slot-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  color: #00ffff;
+  font-size: 0.9rem;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  animation: hintPulse 1.5s infinite ease-in-out;
+  cursor: pointer;
+}
+
+@keyframes hintPulse {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+/* === Colores del botón según turno === */
+.turno-btn {
+  margin: 0.5rem auto;
+  background-color: #e6c200;
+  border: none;
+  color: #000;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  display: block;
+}
+
+.turno-btn:hover:not(:disabled) {
+  background-color: #ffd700;
+}
+
+/* 🔵 Color alternativo si es turno de CPU */
+.cpu-turno .turno-btn {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.cpu-turno .turno-btn:hover:not(:disabled) {
+  background-color: #2563eb;
+}

@@ -13,6 +13,7 @@ export default function ArenaBatalla() {
   const [turnoActual, setTurnoActual] = useState<"jugador" | "cpu">("jugador");
   const [bloqueado, setBloqueado] = useState(false);
   const [resultadoFinal, setResultadoFinal] = useState<string | null>(null);
+  const [mostrarRendirse, setMostrarRendirse] = useState(false);
 
   // === Inicialización ===
   useEffect(() => {
@@ -330,7 +331,7 @@ export default function ArenaBatalla() {
 
         {/* === Jugador === */}
 
-        <div className="player-section">
+        <div className={`player-section ${turnoActual === "cpu" ? "cpu-turno" : ""}`}>
           <div className="campo">
             {estado.jugador.campo.map((carta: any, i: number) => {
               const esNueva = carta?.turnoColocada === estado.ronda;
@@ -338,9 +339,11 @@ export default function ArenaBatalla() {
                 ? esNueva
                   ? "#E6C200"
                   : "#444"
-                : cartaSeleccionada
+                : cartaSeleccionada && turnoActual === "jugador"
                 ? "#00FFFF"
                 : "#888";
+
+              const esSlotVacio = !carta;
 
               return (
                 <div
@@ -349,9 +352,12 @@ export default function ArenaBatalla() {
                     carta ? retirarCartaDelCampo(i) : colocarCartaEnCampo(i)
                   }
                   className={`slot ${animaciones[`jugador-${i}`] || ""}`}
-                  style={{ border: `2px solid ${bordeColor}` }}
+                  style={{
+                    border: `2px solid ${bordeColor}`,
+                    position: "relative",
+                  }}
                 >
-                  {carta && (
+                  {carta ? (
                     <>
                       <img src={carta.image} alt={carta.name} />
                       <div className="slot-info">
@@ -359,6 +365,13 @@ export default function ArenaBatalla() {
                         <span>DEF {carta.hp}</span>
                       </div>
                     </>
+                  ) : (
+                    cartaSeleccionada &&
+                    turnoActual === "jugador" && (
+                      <div className="slot-hint">
+                        <span>Colocar aquí</span>
+                      </div>
+                    )
                   )}
                 </div>
               );
@@ -395,7 +408,7 @@ export default function ArenaBatalla() {
               <p>{estado.jugador.baraja.length}/10</p>
             </div>
           </div>
-
+              {/* Botones */}
           <div
             className={`perfil-container ${
               turnoActual === "jugador" ? "turno-activo" : "turno-inactivo"
@@ -417,27 +430,20 @@ export default function ArenaBatalla() {
               <p>Vida: {estado.jugador.vida}</p>
             </div>
             <div>
+<button
+  onClick={resolverCombate}
+  className="turno-btn"
+  disabled={bloqueado}
+>
+  {bloqueado
+    ? "Resolviendo..."
+    : turnoActual === "jugador"
+    ? "Atacar"
+    : "Defender"}
+</button>
+
               <button
-                onClick={resolverCombate}
-                className="turno-btn"
-                disabled={bloqueado}
-              >
-                {bloqueado ? "Resolviendo..." : "Resolver Turno"}
-              </button>
-              <button
-                onClick={() => {
-                  const confirmar = window.confirm(
-                    "¿Seguro que deseas rendirte?"
-                  );
-                  if (confirmar) {
-                    alert("Te has rendido. La CPU gana esta batalla.");
-                    setEstado((prev: any) => ({
-                      ...prev,
-                      log: [...prev.log, "El jugador se ha rendido."],
-                    }));
-                    setBloqueado(true); // bloquea acciones
-                  }
-                }}
+                onClick={() => setMostrarRendirse(true)}
                 className="rendirse-btn"
                 disabled={bloqueado}
               >
@@ -484,6 +490,43 @@ export default function ArenaBatalla() {
                   onClick={() => navigate("/arena")}
                 >
                   Salir
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        {mostrarRendirse && (
+          <div className="resultado-overlay">
+            <div className="resultado-card">
+              <h2>¿Seguro que deseas rendirte?</h2>
+              <p
+                style={{
+                  marginBottom: "1rem",
+                  fontSize: "1rem",
+                  color: "#ccc",
+                }}
+              >
+                Perderás automáticamente la partida.
+              </p>
+              <div className="resultado-botones">
+                <button
+                  className="btn-salir"
+                  onClick={() => {
+                    setResultadoFinal(
+                      "Te has rendido. La CPU gana la batalla."
+                    );
+                    setMostrarRendirse(false);
+                    setBloqueado(true);
+                  }}
+                >
+                  Sí, rendirme
+                </button>
+
+                <button
+                  className="btn-volver"
+                  onClick={() => setMostrarRendirse(false)}
+                >
+                  Cancelar
                 </button>
               </div>
             </div>
