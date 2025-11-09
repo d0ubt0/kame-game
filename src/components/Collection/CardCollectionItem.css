@@ -10,6 +10,12 @@
   padding: 0;
   width: 300px;
   overflow: hidden;
+  transition: all 0.2s;
+}
+
+.CardCollectionItemContainer:hover{
+  transform: translateY(-2px);
+  filter: brightness(1.1)
 }
 
 .CardCollectionItemContainer img {
