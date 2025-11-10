@@ -6,7 +6,7 @@ interface ICardCollectionItem {
   attack: number;
   defense: number;
   image: string;
-  cantidad: number; // 🆕 Nuevo atributo
+  cantidad: number; 
 }
 
 export function CardCollectionItem({

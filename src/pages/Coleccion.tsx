@@ -4,6 +4,7 @@ import { CardCollectionItem } from '../components/Collection/CardCollectionItem'
 import { PageTitle } from '../components/PageTitle';
 import { placeholderCards } from '../db/db.js';
 import type { Carta } from '../db/yugioh.js';
+import { useState } from 'react';
 
 interface CartaColeccion{
   cartaId: number,
@@ -11,6 +12,7 @@ interface CartaColeccion{
 }
 
 export function Coleccion() {
+  const [sortBy, setSortBy] = useState<string>(''); 
   const userStorage = localStorage.getItem('user');
 
   let cartasColeccion: (Carta & { cantidad: number })[] = [];
@@ -32,11 +34,37 @@ export function Coleccion() {
     })
     .filter((carta): carta is Carta & { cantidad: number } => carta !== null);
 }
+
+  if (sortBy === 'attack') {
+    cartasColeccion.sort((a, b) => (b.attack ?? 0) - (a.attack ?? 0));
+  } else if (sortBy === 'defense') {
+    cartasColeccion.sort((a, b) => (b.defense ?? 0) - (a.defense ?? 0));
+  } else if (sortBy === 'name') {
+    cartasColeccion.sort((a, b) => a.name.localeCompare(b.name));
+  } else if(sortBy === 'cantidad'){
+    cartasColeccion.sort((a, b) => (b.cantidad ?? 0) - (a.cantidad ?? 0));
+  }
   
   return (
     <>
     <PageTitle title='Collection'/>
     <div className='CollectionContainer'>
+
+      <div className='SortContainer'>
+          <label htmlFor='sort'>Ordenar por: </label>
+          <select
+            id='sort'
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value=''>Ninguno</option>
+            <option value='name'>Nombre</option>
+            <option value='cantidad'>Cantidad</option>
+            <option value='attack'>Ataque</option>
+            <option value='defense'>Defensa</option>
+          </select>
+        </div>
+
       
       <div className='CardsContainer'>
         {
