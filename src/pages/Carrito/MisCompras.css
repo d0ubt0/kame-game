@@ -1,0 +1,75 @@
+.miscompras-container {
+  padding: 30px;
+  text-align: center;
+  color: #fff;
+  background-color: #0b0b0b;
+  min-height: 100vh;
+}
+
+.miscompras-container h2 {
+  margin-bottom: 20px;
+  color: #00e676;
+}
+
+.compras-section {
+  margin-bottom: 40px;
+}
+
+.compras-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.compra-item {
+  background: #1a1a1a;
+  border-radius: 10px;
+  padding: 10px;
+  width: 150px;
+  box-shadow: 0 0 10px rgba(0, 230, 118, 0.4);
+}
+
+.compra-item img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.miscompras-container button {
+  background-color: #00e676;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: bold;
+}
+
+.miscompras-container button:hover {
+  background-color: #00c853;
+}
+
+.coleccion-btn {
+  background-color: #2196f3;
+}
+
+.coleccion-btn:hover {
+  background-color: #1976d2;
+}
+
+.contador {
+  display: flex;
+  margin-top: 5px;
+  padding: 3px 8px;
+  background-color: #00ff8c;
+  color: #000;
+  font-weight: bold;
+  border-radius: 8px;
+  font-size: 1.5rem;
+  justify-content: center;
+  width:fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+

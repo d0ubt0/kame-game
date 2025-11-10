@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 // import { Link } from 'react-router-dom';
-// import { useState } from 'react';
 import { PageTitle } from '../components/PageTitle';
 import { PaymentForm } from './Carrito/PaymentForm';
 import './Carrito.css'
 import { placeholderCards, placeholderPacks } from '../db/db';
 import { CartItem } from './Carrito/CartItem';
+import { useNavigate } from "react-router-dom";
+
+
 
 // Tipo base de producto (usa los datos de tu db)
 interface Product {
@@ -16,33 +18,16 @@ interface Product {
   quantity: number;
 }
 
+
 export function Carrito({selectedCards, setSelectedCards}:
   {selectedCards: Set<number>; setSelectedCards: (cards: Set<number>) => void}) {
 
-  /*const [cart, setCart] = useState<Product[]>([
-    {
-      id: 1,
-      name: "Signed Japanese Blue-Eyes White Dragon",
-      price: 14000,
-      image: "/cards/blue-eyes.jpg",
-      quantity: 1,
-    },
-  ]); 
-  
-  const handleIncrease = (id: number) =>
-    setCart(cart.map(p => (p.id === id ? { ...p, quantity: p.quantity + 1 } : p)));
-
-  const handleDecrease = (id: number) =>
-    setCart(cart.map(p => (p.id === id && p.quantity > 1 ? { ...p, quantity: p.quantity - 1 } : p)));
-
-  const handleRemove = (id: number) =>
-    setCart(cart.filter(p => p.id !== id)); */
-
+  const navigate = useNavigate();
 
   const products = Array.from(selectedCards);
 
   const allProducts = [...placeholderCards, ...placeholderPacks];
-  //const productsInCart = allProducts.filter(p => selectedCards.has(p.id));
+ 
 
   // Estado del carrito con cantidad
   const [cart, setCart] = useState<Product[]>([]);
@@ -85,6 +70,70 @@ export function Carrito({selectedCards, setSelectedCards}:
   // Calcular total
   const total = cart.reduce((sum, p) => sum + p.price * p.quantity, 0);
 
+  const handlePayment = () => {
+  if (cart.length === 0) {
+    alert("🛒 Su carrito está vacío. Será redirigido a la tienda.");
+    navigate("/");
+    return;
+  }
+
+  const userStorage = localStorage.getItem("user");
+  let user = userStorage ? JSON.parse(userStorage) : { coleccion: [] };
+
+  const nuevaColeccion = [...user.coleccion];
+
+  const purchasedPacks = cart.filter(item =>
+    placeholderPacks.some(pack => pack.id === item.id)
+  );
+  const purchasedSingles = cart.filter(item =>
+    placeholderCards.some(card => card.id === item.id)
+  );
+
+  // Agregar las cartas a la colección del usuario
+  cart.forEach(item => {
+    const pack = placeholderPacks.find(p => p.id === item.id);
+    if (pack) {
+      pack.cards.forEach(cardId => {
+        const existente = nuevaColeccion.find((c: any) => c.cartaId === Number(cardId));
+        if (existente) {
+          existente.cantidad += item.quantity;
+        } else {
+          nuevaColeccion.push({ cartaId: Number(cardId), cantidad: item.quantity });
+        }
+      });
+    } else {
+      const existente = nuevaColeccion.find((c: any) => c.cartaId === item.id);
+      if (existente) {
+        existente.cantidad += item.quantity;
+      } else {
+        nuevaColeccion.push({ cartaId: item.id, cantidad: item.quantity });
+      }
+    }
+  });
+
+  // Guardar colección actualizada
+  user.coleccion = nuevaColeccion;
+  localStorage.setItem("user", JSON.stringify(user));
+
+  // 🔹 Guardar la última compra (para usar en PagoAnimacion y MisCompras)
+  localStorage.setItem(
+    "lastPurchase",
+    JSON.stringify({ packs: purchasedPacks, singles: purchasedSingles })
+  );
+
+  // Limpiar carrito
+  setCart([]);
+  setSelectedCards(new Set());
+  localStorage.removeItem("selectedCards");
+
+  // Redirigir a la animación
+  navigate("/Carrito/PagoAnimacion", { state: { packs: purchasedPacks, singles: purchasedSingles } });
+};
+
+
+
+  
+
   return (
     <div>
       <PageTitle title='Carrito'/>
@@ -117,14 +166,11 @@ export function Carrito({selectedCards, setSelectedCards}:
           
         </div>
         <div className='panel-formulario'>
-          <PaymentForm />
+          <PaymentForm onPay={handlePayment}/>
         </div>
         
       </div>
 
-      {/*
-     
-      <Link to="/">Volver al Inicio</Link>*/}
     </div>
   );
   

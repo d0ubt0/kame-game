@@ -1,6 +1,6 @@
 import './PaymentForm.css'
 
-export function PaymentForm() {
+export function PaymentForm({ onPay }: { onPay: () => void }) {
     return(
         <div className="formulario">
             <div className='contenedor-titulo'>
@@ -31,9 +31,9 @@ export function PaymentForm() {
                     </div>
                 </div>
                 <div className='contenedor-boton'>
-                    <button className='boton-pagar'>
+                    <button className='boton-pagar' onClick={onPay}>
                     REALIZAR PAGO
-                </button>
+                    </button>
                 </div>
             </form>
         </div>

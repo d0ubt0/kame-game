@@ -18,6 +18,9 @@ import { Footer } from "./components/Footer";
 import SeleccionCartas from "./pages/Arena/SeleccionCartas";
 import { initLocalData } from "./db/initLocalData";
 import ArenaBatalla from "./pages/Arena/ArenaBatalla";
+import { PagoAnimacion } from "./pages/Carrito/PagoAnimacion";
+import { MisCompras } from "./pages/Carrito/MisCompras";
+import { AbrirPaquete } from "./pages/Carrito/AbrirPaquete";
 
 function App() {
   // ✅ 1. Ejecutar inicialización una sola vez
@@ -37,6 +40,9 @@ function App() {
   const hideNavbar =
     location.pathname === "/login" ||
     location.pathname === "/registro" ||
+    location.pathname === "/Carrito/PagoAnimacion" ||
+    location.pathname === "/Carrito/MisCompras" ||
+    location.pathname === "/Carrito/AbrirPaquete" ||
     location.pathname.toLowerCase().startsWith("/arena/batalla");
 
 
@@ -74,6 +80,30 @@ function App() {
                   selectedCards={selectedCards}
                   setSelectedCards={setSelectedCards}
                 />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Carrito/PagoAnimacion"
+            element={
+              <ProtectedRoute>
+                <PagoAnimacion />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Carrito/MisCompras"
+            element={
+              <ProtectedRoute>
+                <MisCompras />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Carrito/AbrirPaquete"
+            element={
+              <ProtectedRoute>
+                <AbrirPaquete />
               </ProtectedRoute>
             }
           />
