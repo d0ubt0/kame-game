@@ -1,34 +1,29 @@
-// src/components/Admin/Paquete/PaqueteForm.tsx
 import React, { useState, useEffect } from 'react';
-// Importamos los tipos de Paquete y Carta
 import type { Paquete, PaqueteFormData, Carta } from '../../../db/yugioh';
 
-// Props que espera el formulario
 interface PaqueteFormProps {
   initialData: Paquete | null;
   onSubmit: (formData: PaqueteFormData) => void;
   onCancel?: () => void;
-  allCartas: Carta[]; // ¡NUEVO! Necesitamos la lista de todas las cartas
+  allCartas: Carta[];
 }
 
-// Estado inicial del formulario
 const defaultFormState: PaqueteFormData = {
   name: '',
-  image: '', // URL
+  image: '', 
   price: 0,
-  cards: [] // Array de IDs (ej: ['101', '102'])
+  cards: [] 
 };
 
 const PaqueteForm: React.FC<PaqueteFormProps> = ({ 
   initialData, 
   onSubmit, 
   onCancel, 
-  allCartas = [] // Valor por defecto
+  allCartas = [] 
 }) => {
   
   const [formData, setFormData] = useState<PaqueteFormData>(defaultFormState);
   
-  // Estado local para manejar el <select>
   const [cardToAdd, setCardToAdd] = useState<string>('');
 
   const isEditing = Boolean(initialData);
@@ -36,16 +31,14 @@ const PaqueteForm: React.FC<PaqueteFormProps> = ({
 
   useEffect(() => {
     if (isEditing && initialData) {
-      // Aseguramos que 'cards' sea siempre un array (incluso si es null o undefined)
       const data = { ...initialData, cards: initialData.cards || [] };
-      const { id, ...formData } = data; // Excluye el 'id'
+      const { id, ...formData } = data; 
       setFormData(formData);
     } else {
       setFormData(defaultFormState);
     }
   }, [initialData, isEditing]);
 
-  // Manejador de cambios genérico
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -54,21 +47,17 @@ const PaqueteForm: React.FC<PaqueteFormProps> = ({
     }));
   };
 
-  // --- Lógica del Selector de Cartas ---
 
-  // Añade la carta seleccionada en el <select> al array 'formData.cards'
   const handleAddCard = () => {
-    // Evita IDs vacíos o duplicados
     if (cardToAdd && !formData.cards.includes(cardToAdd)) {
       setFormData(prev => ({
         ...prev,
         cards: [...prev.cards, cardToAdd]
       }));
     }
-    setCardToAdd(''); // Resetea el select
+    setCardToAdd('');
   };
 
-  // Elimina una carta del array 'formData.cards'
   const handleRemoveCard = (cardIdToRemove: string | number) => {
     setFormData(prev => ({
       ...prev,
@@ -76,30 +65,25 @@ const PaqueteForm: React.FC<PaqueteFormProps> = ({
     }));
   };
 
-  // --- Fin de la lógica del Selector ---
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit(formData);
   };
 
-  // Listas calculadas para la UI
-  // Filtra las cartas que ya están en el paquete
   const availableCartas = allCartas.filter(
     carta => !formData.cards.includes(carta.id.toString())
   );
   
-  // Obtiene los objetos completos de las cartas que están en el paquete (para mostrar los nombres)
   const cartasEnPaquete = formData.cards.map(id => 
     allCartas.find(carta => carta.id.toString() === id.toString())
-  ).filter(Boolean) as Carta[]; // .filter(Boolean) elimina undefined
+  ).filter(Boolean) as Carta[]; 
 
   return (
     <div style={{ border: '1px solid #ccc', padding: '16px', borderRadius: '8px', marginTop: '16px' }}>
       <h3 style={{ fontSize: '2rem', color: '#E6C200'}}>{title}</h3>
       <form onSubmit={handleSubmit}>
 
-        {/* Campos estándar */}
         <div style={{ marginBottom: '12px' }}>
           <label htmlFor="name">Nombre del Paquete:</label><br />
           <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required style={{ width: '300px' }} />
@@ -115,7 +99,6 @@ const PaqueteForm: React.FC<PaqueteFormProps> = ({
           <input type="number" id="price" name="price" value={formData.price} onChange={handleChange} required min="0" step="0.01" />
         </div>
 
-        {/* --- Sección del Selector de Cartas --- */}
         <div style={{ borderTop: '1px solid #444', paddingTop: '16px', marginTop: '16px' }}>
           <h4 style={{ marginTop: 0, color: '#E6C200' }}>Cartas del Paquete</h4>
           
@@ -139,7 +122,6 @@ const PaqueteForm: React.FC<PaqueteFormProps> = ({
             </button>
           </div>
 
-          {/* Lista de cartas ya añadidas */}
           <div>
             {cartasEnPaquete.length === 0 ? (
               <p style={{ color: '#888', fontStyle: 'italic' }}>Este paquete aún no tiene cartas.</p>
@@ -161,9 +143,7 @@ const PaqueteForm: React.FC<PaqueteFormProps> = ({
             )}
           </div>
         </div>
-        {/* --- FIN Sección Selector --- */}
 
-        {/* Botones */}
         <div style={{ marginTop: '20px' }}>
           <button type="submit">{isEditing ? 'Actualizar' : 'Guardar'}</button>
           {onCancel && (

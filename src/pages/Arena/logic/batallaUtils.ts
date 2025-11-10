@@ -1,4 +1,3 @@
-// src/pages/Arena/logic/batallaUtils.ts
 export interface CartaEnJuego {
   id: number;
   name: string;
@@ -6,8 +5,7 @@ export interface CartaEnJuego {
   defense: number;
   hp: number;
   image: string;
-  uid: string;       // 👈 nuevo: id único por copia
-  slot?: number;
+  uid: string;      
 }
 
 
@@ -40,12 +38,11 @@ export function generarBarajaCpu(cantidad: number): CartaEnJuego[] {
     defense: c.defense,
     hp: c.defense,
     image: c.image,
-    uid: makeUid(), // 👈 uid por copia CPU
+    uid: makeUid(), 
   }));
 }
 
 export function inicializarPartida(cartasJugador: any[]): EstadoBatalla {
-  // A cada carta seleccionada del jugador también le damos un uid único
   const barajaJugador: CartaEnJuego[] = cartasJugador.map((c: any) => ({
     id: c.id,
     name: c.name,
@@ -53,7 +50,7 @@ export function inicializarPartida(cartasJugador: any[]): EstadoBatalla {
     defense: c.defense,
     hp: c.defense,
     image: c.image,
-    uid: makeUid(), // 👈 uid por copia jugador
+    uid: makeUid(), 
   }));
 
   const barajaCpu = generarBarajaCpu(cartasJugador.length);

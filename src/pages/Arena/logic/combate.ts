@@ -1,9 +1,7 @@
 import { turnoCPU } from "./cpuLogic";
 import { robarCarta, ambosSinCartas } from "./helpers";
 
-/**
- * Resuelve un turno completo de combate entre jugador y CPU.
- */
+
 export function resolverCombate(estado: any): any {
   let nuevoEstado = { ...estado };
   let logTurno: string[] = [];

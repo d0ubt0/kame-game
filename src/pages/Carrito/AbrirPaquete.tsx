@@ -7,13 +7,10 @@ export function AbrirPaquete() {
   const location = useLocation();
   const navigate = useNavigate();
   const purchasedPacks = location.state?.packs || [];
-
   const [currentPackIndex, setCurrentPackIndex] = useState(0);
   const [opened, setOpened] = useState(false);
   const [cardsToShow, setCardsToShow] = useState<any[]>([]);
   const [allCards, setAllCards] = useState<any[]>([]);
-
-  // 🔹 Expande paquetes repetidos según cantidad
   const expandedPacks = purchasedPacks.flatMap((pack: any) =>
     Array(pack.quantity || 1).fill(pack)
   );
@@ -44,7 +41,6 @@ export function AbrirPaquete() {
     if (currentPackIndex < expandedPacks.length - 1) {
       setCurrentPackIndex(currentPackIndex + 1);
     } else {
-      // Mostrar resumen final
       setOpened(true);
       setCardsToShow(allCards);
     }

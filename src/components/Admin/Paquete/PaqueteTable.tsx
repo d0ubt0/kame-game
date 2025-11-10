@@ -1,14 +1,11 @@
-// src/components/Admin/Paquete/PaqueteTable.tsx
 import React from 'react';
-// Importamos los tipos necesarios (asumiendo que están en /types/yugioh.ts)
 import type { Paquete }
 from '../../../db/yugioh';
 
-// Props que espera la tabla
 interface PaqueteTableProps {
   paquetes: Paquete[];
   onEdit: (paquete: Paquete) => void;
-  onDelete: (id: number | string) => void; // Acepta string o number
+  onDelete: (id: number | string) => void;
 }
 
 const PaqueteTable: React.FC<PaqueteTableProps> = ({ paquetes = [], onEdit, onDelete }) => {
@@ -41,7 +38,6 @@ const PaqueteTable: React.FC<PaqueteTableProps> = ({ paquetes = [], onEdit, onDe
                 />
               </td>
               <td style={{ padding: '8px' }}>{paquete.name}</td>
-              {/* Mostramos cuántas cartas tiene el paquete */}
               <td style={{ padding: '8px' }}>{paquete.cards.length}</td>
               <td style={{ padding: '8px' }}>${paquete.price}</td>
               <td style={{ padding: '8px' }}>

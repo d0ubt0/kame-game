@@ -1,4 +1,3 @@
-// src/pages/PaginaAdmin.tsx
 import { PageTitle } from '../../components/PageTitle';
 import { Link } from 'react-router-dom';
 import "./AdminDashboard.css"

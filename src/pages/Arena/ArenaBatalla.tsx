@@ -37,10 +37,10 @@ export default function ArenaBatalla() {
     setEstado(estadoInicial);
   }, []);
 
-  // === Colocar carta ===
+ 
   // === Colocar carta ===
   const colocarCartaEnCampo = (slotIndex: number) => {
-    if (turnoActual === "cpu") return; // 🚫 Bloquea si no es turno del jugador
+    if (turnoActual === "cpu") return; // Bloquea si no es turno del jugador
     if (!estado || !cartaSeleccionada) return;
     if (estado.jugador.campo[slotIndex]) {
       alert("Ese slot ya está ocupado.");
@@ -73,7 +73,7 @@ export default function ArenaBatalla() {
 
   // === Retirar carta ===
   const retirarCartaDelCampo = (slotIndex: number) => {
-    if (turnoActual === "cpu") return; // 🚫 Bloquea si no es turno del jugador
+    if (turnoActual === "cpu") return; //  Bloquea si no es turno del jugador
     if (!estado) return;
     const carta = estado.jugador.campo[slotIndex];
     if (!carta) return;
@@ -153,8 +153,8 @@ export default function ArenaBatalla() {
 
   // === Resolver combate secuencial ===
   const resolverCombate = async () => {
-    if (!estado || bloqueado) return; // 🚫 si ya está en animación, no hacer nada
-    setBloqueado(true); // 🔒 bloquea interacciones
+    if (!estado || bloqueado) return; //  si ya está en animación, no hacer nada
+    setBloqueado(true); //  bloquea interacciones
     let nuevoEstado = { ...estado };
     let logTurno: string[] = [];
 
@@ -192,13 +192,13 @@ export default function ArenaBatalla() {
             logTurno.push(
               `${logPrefix} atacó directamente causando ${atacante.attack} de daño.`
             );
-            activarAnimacion("cpu-perfil", "perfil-daño"); // ⚡ daña imagen CPU
+            activarAnimacion("cpu-perfil", "perfil-daño"); //  daña imagen CPU
           } else {
             nuevoEstado.jugador.vida -= atacante.attack;
             logTurno.push(
               `${logPrefix} atacó directamente causando ${atacante.attack} de daño.`
             );
-            activarAnimacion("jugador-perfil", "perfil-daño"); // ⚡ daña imagen Jugador
+            activarAnimacion("jugador-perfil", "perfil-daño"); //  daña imagen Jugador
           }
         }
 
@@ -278,7 +278,7 @@ export default function ArenaBatalla() {
     nuevoEstado.log = [...nuevoEstado.log, ...logTurno];
     setEstado(nuevoEstado);
 
-    setBloqueado(false); // 🔓 desbloquea al terminar
+    setBloqueado(false); // desbloquea al terminar
   };
 
   if (!estado) return <p>Cargando batalla...</p>;

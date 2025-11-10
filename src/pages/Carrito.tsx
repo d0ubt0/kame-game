@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-// import { Link } from 'react-router-dom';
 import { PageTitle } from '../components/PageTitle';
 import { PaymentForm } from './Carrito/PaymentForm';
 import './Carrito.css'
@@ -9,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 
 
 
-// Tipo base de producto (usa los datos de tu db)
 interface Product {
   id: number;
   name: string;
@@ -29,10 +27,8 @@ export function Carrito({selectedCards, setSelectedCards}:
   const allProducts = [...placeholderCards, ...placeholderPacks];
  
 
-  // Estado del carrito con cantidad
   const [cart, setCart] = useState<Product[]>([]);
 
-   // Cada vez que cambian los seleccionados, actualizamos el carrito
   useEffect(() => {
     const selectedProducts = allProducts
       .filter((p) => selectedCards.has(p.id))
@@ -67,7 +63,6 @@ export function Carrito({selectedCards, setSelectedCards}:
     setCart((prev) => prev.filter((p) => p.id !== id));
   };
 
-  // Calcular total
   const total = cart.reduce((sum, p) => sum + p.price * p.quantity, 0);
 
   const handlePayment = () => {
@@ -89,7 +84,6 @@ export function Carrito({selectedCards, setSelectedCards}:
     placeholderCards.some(card => card.id === item.id)
   );
 
-  // Agregar las cartas a la colección del usuario
   cart.forEach(item => {
     const pack = placeholderPacks.find(p => p.id === item.id);
     if (pack) {
@@ -115,7 +109,7 @@ export function Carrito({selectedCards, setSelectedCards}:
   user.coleccion = nuevaColeccion;
   localStorage.setItem("user", JSON.stringify(user));
 
-  // 🔹 Guardar la última compra (para usar en PagoAnimacion y MisCompras)
+  //Guardar la última compra
   localStorage.setItem(
     "lastPurchase",
     JSON.stringify({ packs: purchasedPacks, singles: purchasedSingles })

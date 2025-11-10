@@ -16,7 +16,6 @@ export function PagoAnimacion() {
     const timer = setTimeout(() => {
       setStatus('exitoso');
 
-      // ✅ Solo guardar si no existe (evita duplicar o borrar la compra anterior)
       if (!localStorage.getItem('lastPurchase')) {
         const purchaseData = {
           packs: purchasedPacks,

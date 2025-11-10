@@ -26,7 +26,6 @@ export function CardCollectionItem({
       <div className="CardCollectionItemAttributes">
         <span>ATK: {attack}</span>
         <span>DEF: {defense}</span>
- {/* 🆕 Mostrar cantidad */}
       </div>
     </article>
   );

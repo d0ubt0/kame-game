@@ -1,4 +1,3 @@
-// src/context/AuthContext.tsx
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import type { Usuario } from "../db/yugioh";
@@ -35,10 +34,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setUsers([]);
         }
       } else {
-        setUsers([]); // sin usuarios iniciales, se crea vacío
+        setUsers([]);
       }
 
-      // Cargar usuario autenticado (si hay uno guardado)
       if (savedUser) {
         const parsedUser = JSON.parse(savedUser);
         setUser(parsedUser);

@@ -1,4 +1,3 @@
-// src/pages/admin/ManageSingles.tsx
 import { useState, useEffect } from 'react';
 import SingleTable from '../../components/Admin/Carta/CartaTable';
 import SingleForm from '../../components/Admin/Carta/CartaForm';
@@ -13,7 +12,6 @@ function ManageSingles() {
   const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
   const [singleToEdit, setSingleToEdit] = useState<Carta | null>(null);
 
-  // === Cargar cartas desde localStorage al iniciar ===
   useEffect(() => {
     try {
       const storedData = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -33,14 +31,12 @@ function ManageSingles() {
     }
   }, []);
 
-  // === Guardar en localStorage cada vez que cambian las cartas ===
   useEffect(() => {
     if (!isLoading) {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(singles));
     }
   }, [singles, isLoading]);
 
-  // === Crear o actualizar carta ===
   const handleFormSubmit = (formData: CartaFormData) => {
     if (singleToEdit) {
       const updated = singles.map((s) =>
@@ -74,13 +70,11 @@ function ManageSingles() {
     setSingleToEdit(null);
   };
 
-  // === Mostrar formulario de nueva carta ===
   const showCreateForm = () => {
     setSingleToEdit(null);
     setIsFormVisible(true);
   };
 
-  // === Renderizado ===
   return (
     <div>
       <PageTitle title="Gestión de Cartas" />

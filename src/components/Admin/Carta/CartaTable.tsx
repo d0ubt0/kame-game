@@ -1,8 +1,6 @@
-// src/components/singles/SingleTable.tsx
 import React from 'react';
 import type { Carta } from '../../../db/yugioh'; 
 
-// Props que espera la tabla
 interface SingleTableProps {
   singles: Carta[];
   onEdit: (single: Carta) => void;
@@ -14,7 +12,6 @@ const SingleTable: React.FC<SingleTableProps> = ({ singles = [], onEdit, onDelet
     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
       <thead>
         <tr style={{ borderBottom: '2px solid black' }}>
-          {/* Cabeceras de la tabla en español */}
           <th style={{ padding: '8px', textAlign: 'left' }}>Imagen</th>
           <th style={{ padding: '8px', textAlign: 'left' }}>Nombre</th>
           <th style={{ padding: '8px', textAlign: 'left' }}>ATK</th>
@@ -26,7 +23,6 @@ const SingleTable: React.FC<SingleTableProps> = ({ singles = [], onEdit, onDelet
       <tbody>
         {singles.length === 0 ? (
           <tr>
-            {/* Mensaje de tabla vacía en español */}
             <td colSpan={6} style={{ padding: '16px', textAlign: 'center' }}>
               No hay cartas registradas.
             </td>
@@ -46,7 +42,6 @@ const SingleTable: React.FC<SingleTableProps> = ({ singles = [], onEdit, onDelet
               <td style={{ padding: '8px' }}>{single.defense}</td>
               <td style={{ padding: '8px' }}>${single.price}</td>
               <td style={{ padding: '8px' }}>
-                {/* Botones de acción en español */}
                 <button onClick={() => onEdit(single)}>Editar</button>
                 <button 
                   onClick={() => onDelete(single.id)} 

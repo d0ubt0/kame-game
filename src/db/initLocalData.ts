@@ -1,4 +1,3 @@
-// src/services/initLocalData.ts
 import { placeholderCards, placeholderPacks, placeholderUsers } from "../db/db";
 
 export function initLocalData(force = false) {

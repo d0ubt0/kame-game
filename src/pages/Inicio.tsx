@@ -13,7 +13,6 @@ export function Inicio({selectedCards, setSelectedCards}: {
   selectedCards: Set<number>;
   setSelectedCards: (cards: Set<number>) => void;
 }) {
-   // Funciona con el ID
   const [packsStore, ] = useState<StoreCardType[]>(placeholderPacks);
   const [cardsStore, ] = useState<StoreCardType[]>(placeholderCards);
 

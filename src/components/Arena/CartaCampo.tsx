@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 const mockCartas = [
   { id: 1, nombre: "Maldición del Dragón", atk: 2000, img: "/cards/dragon.jpg" },
   { id: 2, nombre: "Bestia Cristal Águila", atk: 1800, img: "/cards/eagle.jpg" },
-  // ... añadir las que tengas
 ];
 
 export default function SeleccionCartas() {
@@ -26,7 +25,6 @@ export default function SeleccionCartas() {
       alert("Selecciona 10 cartas para iniciar la batalla.");
       return;
     }
-    // Guardar selección en localStorage o contexto
     localStorage.setItem("cartasSeleccionadas", JSON.stringify(seleccionadas));
     navigate("/arena/batalla");
   };

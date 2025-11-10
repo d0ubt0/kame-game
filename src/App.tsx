@@ -1,6 +1,6 @@
 // src/App.tsx
 import { Routes, Route, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react"; // 👈 Asegúrate de importar useEffect
+import { useEffect, useState } from "react";
 import { Inicio } from "./pages/Inicio";
 import { Coleccion } from "./pages/Coleccion";
 import { Admin } from "./pages/Admin/AdminDashboard";
@@ -23,19 +23,16 @@ import { MisCompras } from "./pages/Carrito/MisCompras";
 import { AbrirPaquete } from "./pages/Carrito/AbrirPaquete";
 
 function App() {
-  // ✅ 1. Ejecutar inicialización una sola vez
   useEffect(() => {
-    initLocalData(); // carga cartas y paquetes desde db.ts si no existen
+    initLocalData();
   }, []);
 
-  // ✅ 2. Estado compartido de cartas seleccionadas
   const [selectedCards, setSelectedCards] = useState<Set<number>>(() => {
   const stored = localStorage.getItem('selectedCards');
   return stored ? new Set(JSON.parse(stored)) : new Set();
 });
 
 
-  // ✅ 3. Ocultar Navbar y Footer en login y registro
   const location = useLocation();
   const hideNavbar =
     location.pathname === "/login" ||

@@ -1,4 +1,3 @@
-// src/components/Admin/Usuario/UsuarioForm.tsx
 import React, { useState, useEffect } from "react";
 import type { Usuario, UsuarioFormData } from "../../../db/yugioh";
 
@@ -58,7 +57,6 @@ const UsuarioForm: React.FC<UsuarioFormProps> = ({
 
     const existingUsers = JSON.parse(localStorage.getItem("users") || "[]");
 
-    // Si se crea o se edita a otro usuario con el mismo correo
     const emailExists = existingUsers.some(
       (u: Usuario) =>
         u.email === formData.email &&
@@ -72,7 +70,7 @@ const UsuarioForm: React.FC<UsuarioFormProps> = ({
 
     const payload: UsuarioFormData = {
       ...formData,
-      username: formData.email.split("@")[0], // generado automáticamente
+      username: formData.email.split("@")[0],
     };
 
     if (isEditing && !formData.password) {
@@ -95,7 +93,6 @@ const UsuarioForm: React.FC<UsuarioFormProps> = ({
       <h3 style={{ fontSize: "2rem", color: "#E6C200" }}>{title}</h3>
 
       <form onSubmit={handleSubmit}>
-        {/* Campo de correo */}
         <div style={{ marginBottom: "12px" }}>
           <label htmlFor="email">Correo electrónico:</label>
           <br />
@@ -110,7 +107,6 @@ const UsuarioForm: React.FC<UsuarioFormProps> = ({
           />
         </div>
 
-        {/* Campo de contraseña (solo al crear) */}
         {!isEditing && (
           <div style={{ marginBottom: "12px" }}>
             <label htmlFor="password">Contraseña:</label>
@@ -127,7 +123,6 @@ const UsuarioForm: React.FC<UsuarioFormProps> = ({
           </div>
         )}
 
-        {/* Campo de rol */}
         <div style={{ marginBottom: "12px" }}>
           <label htmlFor="role">Rol:</label>
           <br />
@@ -143,14 +138,12 @@ const UsuarioForm: React.FC<UsuarioFormProps> = ({
           </select>
         </div>
 
-        {/* Mostrar error si el correo ya existe */}
         {error && (
           <p style={{ color: "red", marginTop: "10px", fontWeight: "bold" }}>
             {error}
           </p>
         )}
 
-        {/* Botones */}
         <div style={{ marginTop: "20px" }}>
           <button type="submit">
             {isEditing ? "Actualizar" : "Guardar"}

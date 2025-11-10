@@ -34,15 +34,12 @@ export function MisCompras() {
     };
   }, [location.state]);
 
-  // Agrupar cartas individuales usando la propiedad `quantity` de cada item (fallback 1)
   const groupedSingles = Object.values(
     purchasedSingles.reduce((acc: any, card: any) => {
-      // clave confiable: id si existe, si no usa el nombre en minúsculas
       const key = (card.id !== undefined ? String(card.id) : (card.name || '').toLowerCase().trim());
-      const qty = Number(card.quantity ?? card.count ?? 1); // usa quantity si existe, sino count o 1
+      const qty = Number(card.quantity ?? card.count ?? 1); // usa quantity si existe, sino count = 1
 
       if (!acc[key]) {
-        // guardamos la estructura con quantity total en `count`
         acc[key] = { ...card, count: qty };
       } else {
         acc[key].count += qty;

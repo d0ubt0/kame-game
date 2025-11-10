@@ -1,4 +1,3 @@
-// src/components/Admin/Usuario/UsuarioTable.tsx
 import React from "react";
 import type { Usuario } from "../../../db/yugioh";
 

@@ -1,4 +1,3 @@
-// src/pages/admin/ManagePaquetes.tsx
 import { useState, useEffect } from 'react';
 import PaqueteTable from '../../components/Admin/Paquete/PaqueteTable';
 import PaqueteForm from '../../components/Admin/Paquete/PaqueteForm';
@@ -15,7 +14,6 @@ function ManagePaquetes() {
   const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
   const [paqueteToEdit, setPaqueteToEdit] = useState<Paquete | null>(null);
 
-  // === Cargar cartas y paquetes desde localStorage ===
   useEffect(() => {
     try {
       const storedCartas = localStorage.getItem(LOCAL_STORAGE_CARTAS);
@@ -37,21 +35,18 @@ function ManagePaquetes() {
     }
   }, []);
 
-  // === Guardar en localStorage cada vez que cambian los paquetes ===
   useEffect(() => {
     if (!isLoading) {
       localStorage.setItem(LOCAL_STORAGE_PAQUETES, JSON.stringify(paquetes));
     }
   }, [paquetes, isLoading]);
 
-  // === Guardar en localStorage cada vez que cambian las cartas ===
   useEffect(() => {
     if (!isLoading) {
       localStorage.setItem(LOCAL_STORAGE_CARTAS, JSON.stringify(allCartas));
     }
   }, [allCartas, isLoading]);
 
-  // === Crear o actualizar paquete ===
   const handleFormSubmit = (formData: PaqueteFormData) => {
     if (paqueteToEdit) {
       const updated = paquetes.map((p) =>
@@ -85,7 +80,6 @@ function ManagePaquetes() {
     setPaqueteToEdit(null);
   };
 
-  // === Mostrar formulario de nuevo paquete ===
   const showCreateForm = () => {
     setPaqueteToEdit(null);
     setIsFormVisible(true);

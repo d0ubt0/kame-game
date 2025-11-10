@@ -1,19 +1,15 @@
-// src/components/singles/SingleForm.tsx
 import React, { useState, useEffect } from 'react';
-// Importamos los tipos actualizados
 import type { Carta, CartaFormData } from '../../../db/yugioh';
 
-// Props que espera el formulario
 interface SingleFormProps {
-  initialData: Carta | null; // Puede ser un objeto (editar) o null (crear)
+  initialData: Carta | null; 
   onSubmit: (formData: CartaFormData) => void;
-  onCancel?: () => void; // '?' significa que es opcional
+  onCancel?: () => void; 
 }
 
-// Estado inicial del formulario con los nuevos campos
 const defaultFormState: CartaFormData = {
   name: '',
-  image: '', // URL
+  image: '',
   description: '',
   attack: 0,
   defense: 0,
@@ -22,37 +18,31 @@ const defaultFormState: CartaFormData = {
 
 const SingleForm: React.FC<SingleFormProps> = ({ initialData, onSubmit, onCancel }) => {
   
-  // Tipamos el hook useState con CartaFormData
   const [formData, setFormData] = useState<CartaFormData>(defaultFormState);
 
   const isEditing = Boolean(initialData);
-  // Título dinámico en español
   const title = isEditing ? 'Editar Carta' : 'Crear Nueva Carta';
 
-  // Este efecto se usa para llenar el formulario si estamos editando
   useEffect(() => {
     if (isEditing && initialData) {
-      const { id, ...formData } = initialData; // Excluye el 'id'
+      const { id, ...formData } = initialData; 
       setFormData(formData);
     } else {
-      setFormData(defaultFormState); // Resetea al estado inicial si es "crear"
+      setFormData(defaultFormState); 
     }
   }, [initialData, isEditing]);
 
-  // Manejador de cambios para <input> y <textarea>
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
 
     setFormData(prev => ({
       ...prev,
-      // Convertimos a número si el campo es 'price', 'attack' o 'defense'
       [name]: (name === 'price') ? parseFloat(value) || 0 :
              (name === 'attack' || name === 'defense') ? parseInt(value, 10) || 0 :
-             value // El resto (name, image, description) son strings
+             value 
     }));
   };
 
-  // Manejador para el envío del formulario
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit(formData);
@@ -100,7 +90,6 @@ const SingleForm: React.FC<SingleFormProps> = ({ initialData, onSubmit, onCancel
           <input type="number" id="price" name="price" value={formData.price} onChange={handleChange} required min="0" step="0.01" />
         </div>
 
-        {/* Botones en español */}
         <button type="submit">{isEditing ? 'Actualizar' : 'Guardar'}</button>
         {onCancel && (
           <button type="button" onClick={onCancel} style={{ marginLeft: '8px' }}>

@@ -38,6 +38,6 @@ footer p{
 @media (max-width: 768px) {
   footer {
 
-    padding-bottom: 105px; /* espacio para que no se solape con el navbar fijo */
+    padding-bottom: 105px;
   }
 }

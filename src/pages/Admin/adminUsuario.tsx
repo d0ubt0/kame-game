@@ -13,7 +13,6 @@ function ManageUsers() {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [usuarioEditar, setUsuarioEditar] = useState<Usuario | null>(null);
 
-  // === Cargar usuarios desde localStorage ===
   useEffect(() => {
     try {
       const stored = localStorage.getItem(LOCAL_STORAGE_USERS);
@@ -37,7 +36,6 @@ function ManageUsers() {
     }
   }, []);
 
-  // === Guardar cambios ===
   useEffect(() => {
     if (!isLoading) {
       localStorage.setItem(LOCAL_STORAGE_USERS, JSON.stringify(usuarios));
@@ -62,7 +60,7 @@ function ManageUsers() {
         username,
         email,
         password,
-        role: "cliente", // 👈 Rol por defecto
+        role: "cliente",
       };
 
       setUsuarios([...usuarios, nuevoUsuario]);
