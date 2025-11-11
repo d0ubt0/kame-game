@@ -35,60 +35,74 @@ export default function Registro() {
 
   return (
     <div className="registro-container">
-      <div className="registro-card">
-        <h2 className="registro-title">Registro de Nuevo Duelista</h2>
-
-        <form onSubmit={handleSubmit} className="registro-form">
-          <div className="form-group">
-            <label>Correo electrónico</label>
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-            />
+      <div className="registro-left">
+        <div className="registro-card">
+          <div className="logo-section">
+            <h1 className="registro-title">Únete a Duel Shop</h1>
+            <p className="registro-subtitle">Crea tu cuenta y comienza tu aventura</p>
           </div>
 
-          <div className="form-group">
-            <label>Contraseña</label>
-            <input
-              type="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
+          <form onSubmit={handleSubmit} className="registro-form">
+            <div className="form-group">
+              <label>Correo electrónico</label>
+              <input
+                type="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                placeholder="tu@email.com"
+                required
+              />
+            </div>
 
-          <div className="form-group">
-            <label>Confirmar contraseña</label>
-            <input
-              type="password"
-              name="confirm"
-              value={form.confirm}
-              onChange={handleChange}
-              required
-            />
-          </div>
+            <div className="form-group">
+              <label>Contraseña</label>
+              <input
+                type="password"
+                name="password"
+                value={form.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+                required
+              />
+            </div>
 
-          {error && <p className="error-text">{error}</p>}
-          {success && <p className="success-text">{success}</p>}
+            <div className="form-group">
+              <label>Confirmar contraseña</label>
+              <input
+                type="password"
+                name="confirm"
+                value={form.confirm}
+                onChange={handleChange}
+                placeholder="••••••••"
+                required
+              />
+            </div>
 
-          <button type="submit" className="registro-btn">
-            Registrarme
-          </button>
-        </form>
+            {error && <p className="error-text">{error}</p>}
+            {success && <p className="success-text">{success}</p>}
 
-        <p className="registro-footer">
-          ¿Ya tienes cuenta?{" "}
-          <span
-            className="registro-link"
-            onClick={() => navigate("/login")}
-          >
-            Inicia sesión
-          </span>
-        </p>
+            <button type="submit" className="registro-btn">
+              Registrarme
+            </button>
+          </form>
+
+          <p className="registro-footer">
+            ¿Ya tienes cuenta?{" "}
+            <span onClick={() => navigate("/login")} className="link">
+              Inicia sesión
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <div className="registro-right">
+        <div className="overlay"></div>
+        <div className="right-content">
+          <img src="/yugioh-logo.png" alt="Yu-Gi-Oh!" className="yugioh-logo" />
+          <h3 className="tagline">"Tu viaje como duelista comienza aquí."</h3>
+          <p className="copyright">© 2025 Duel Shop. Todos los derechos reservados.</p>
+        </div>
       </div>
     </div>
   );
