@@ -269,3 +269,17 @@ img[src="/yugioh-home.webp"] {
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #ffed4e, #ffd700);
 }
+
+
+.CardsStoreContainer {
+  justify-items: center; /* Centra cada carta dentro del grid */
+}
+
+.StoreContainer {
+  padding-inline: clamp(10px, 5vw, 70px);
+}
+
+.CardsStoreContainer > * {
+  max-width: 100%;
+  width: min(100%, 320px);
+}
