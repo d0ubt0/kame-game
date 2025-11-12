@@ -1,3 +1,4 @@
+/* Navbar Principal */
 .navbar {
   display: flex;
   align-items: center;
@@ -36,7 +37,7 @@
   gap: 12px;
   text-decoration: none;
   color: #ffd700;
-  font-size: 22px;
+  font-size: clamp(16px, 3vw, 22px);
   font-weight: 700;
   letter-spacing: 1px;
   transition: all 0.3s ease;
@@ -64,8 +65,8 @@
 }
 
 .icono-logo {
-  width: 35px;
-  height: 35px;
+  width: clamp(28px, 5vw, 35px);
+  height: clamp(28px, 5vw, 35px);
   filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.5));
   transition: all 0.3s ease;
 }
@@ -134,7 +135,6 @@
   overflow: hidden;
 }
 
-/* Efecto de brillo en hover */
 .navLinks li a::before {
   content: "";
   position: absolute;
@@ -191,7 +191,7 @@
 
 .userName {
   color: #ffd700;
-  font-size: 14px;
+  font-size: clamp(12px, 2vw, 14px);
   font-weight: 600;
   letter-spacing: 0.5px;
   padding: 8px 16px;
@@ -200,6 +200,7 @@
   border: 1px solid rgba(255, 215, 0, 0.15);
   text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
   animation: glow 2s ease-in-out infinite;
+  white-space: nowrap;
 }
 
 @keyframes glow {
@@ -227,9 +228,9 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  white-space: nowrap;
 }
 
-/* Efecto de brillo en el botón */
 .authButton::before {
   content: "";
   position: absolute;
@@ -264,21 +265,42 @@
   filter: brightness(0.3);
 }
 
-/* Iconos específicos */
-.icono-admin,
-.icono-arena,
-.icono-coleccion,
-.icono-carrito,
-.icono-login,
-.icono-logout {
-  width: 20px;
-  height: 20px;
+/* Mobile Menu Button */
+.menuToggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  z-index: 1001;
+}
+
+.menuToggle span {
+  width: 25px;
+  height: 3px;
+  background: #ffd700;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.menuToggle.active span:nth-child(1) {
+  transform: rotate(45deg) translateY(8px);
+}
+
+.menuToggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.menuToggle.active span:nth-child(3) {
+  transform: rotate(-45deg) translateY(-8px);
 }
 
 /* Responsive */
 @media (max-width: 1024px) {
   .navbar {
-    padding: 0 20px;
+    padding: 0 25px;
     height: 70px;
   }
 
@@ -288,7 +310,7 @@
 
   .navLinks li a {
     padding: 8px 12px;
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .navLinks li a span {
@@ -296,34 +318,132 @@
   }
 
   .navLinks li a img {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
+  }
+
+  .authActions {
+    gap: 10px;
+  }
+
+  .userName {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .authButton {
+    padding: 8px 12px;
+    font-size: 12px;
   }
 
   .authButton span {
     display: none;
   }
+
+  .authButton img {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 @media (max-width: 768px) {
   .navbar {
-    flex-direction: column;
-    height: auto;
-    padding: 15px 20px;
-    gap: 15px;
+    padding: 0 20px;
+    height: 65px;
+  }
+
+  .menuToggle {
+    display: flex;
   }
 
   .navLinks {
-    flex-wrap: wrap;
-    justify-content: center;
+    position: fixed;
+    top: 65px;
+    left: -100%;
+    width: 100%;
+    height: calc(100vh - 65px);
+    background: linear-gradient(180deg, #1a0b2e 0%, #0f051d 100%);
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 30px 20px;
+    gap: 15px;
+    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   }
 
-  .logo a {
-    font-size: 18px;
+  .navLinks.active {
+    left: 0;
+  }
+
+  .navLinks li {
+    width: 100%;
+    animation: none;
+  }
+
+  .navLinks li a {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 16px;
+    justify-content: flex-start;
+  }
+
+  .navLinks li a span {
+    display: inline;
+  }
+
+  .authActions {
+    gap: 10px;
   }
 
   .userName {
-    font-size: 12px;
     padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .authButton {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .authButton span {
+    display: none;
+  }
+
+  .authButton img {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0 15px;
+    height: 60px;
+  }
+
+  .logo a {
+    gap: 8px;
+  }
+
+  .navLinks {
+    top: 60px;
+    height: calc(100vh - 60px);
+    padding: 20px 15px;
+    gap: 12px;
+  }
+
+  .navLinks li a {
+    padding: 12px 15px;
+    font-size: 15px;
+  }
+
+  .userName {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  .authButton {
+    padding: 8px 10px;
   }
 }
