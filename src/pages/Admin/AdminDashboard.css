@@ -1,3 +1,62 @@
-.admin{
-    height: 100vh;
+.admin-container {
+  position: relative;
+  min-height: 70vh;
+  display: flex;
+  align-items: flex-start;         
+  justify-content: center;
+  color: white;
+  overflow: hidden;
+  padding-top: 8vh;                
+}
+
+.admin-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 0;
+}
+
+.admin-content {
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(230, 194, 0, 0.5);
+  box-shadow: 0 0 20px rgba(230, 194, 0, 0.2);
+  border-radius: 12px;
+  padding: 3rem 4rem;
+  text-align: center;
+  backdrop-filter: blur(8px);
+}
+
+.admin-content h1 {
+  color: #E6C200;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  letter-spacing: 1px;
+}
+
+.admin-links {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.admin-btn {
+  display: inline-block;
+  background: #E6C200;
+  color: black;
+  padding: 12px 30px;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 10px rgba(230, 194, 0, 0.6);
+}
+
+.admin-btn:hover {
+  background: #ffea4a;
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(255, 234, 74, 0.8);
 }

@@ -20,7 +20,7 @@
 .arena-content {
   position: relative;
   z-index: 1;
-  padding: 1rem; /* antes 2rem */
+  padding: 1rem; 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -36,13 +36,12 @@
 }
 
 /* === Campos y Slots === */
-/* === Campos y Slots === */
 .campo {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px; /* antes 12px */
-  margin-top: 0.4rem; /* antes 1rem */
+  gap: 8px; 
+  margin-top: 0.4rem; 
 }
 
 
@@ -75,33 +74,60 @@
 }
 
 /* === Mano y Baraja === */
-/* === Mano y Baraja === */
 .mano-container {
-  margin-top: 1rem; /* antes 2rem */
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px; /* antes 16px */
-  flex-wrap: wrap;
+  flex-wrap: wrap;              
+  justify-content: center;      
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  margin-top: 1rem;
 }
 
+/* Cartas en la mano */
 .mano {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 8px;
+  flex-grow: 1;                 
+  width: fit-content;;               
 }
 
+/* Baraja al lado derecho de la mano */
 .baraja {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  margin-left: 8px;             
 }
 
+/* Estilo visual */
 .baraja img {
   width: 70px;
   height: 100px;
+  border-radius: 6px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
 }
 
 .baraja p {
-  margin-top: 2px; /* antes 4px */
+  margin-top: 4px;
+  color: white;
+  font-size: 0.85rem;
+  text-align: center;
 }
+
+/* Scroll en caso de muchas cartas */
+.mano::-webkit-scrollbar {
+  height: 6px;
+}
+.mano::-webkit-scrollbar-thumb {
+  background-color: #E6C200;
+  border-radius: 10px;
+}
+  
 
 /* === Cartas === */
 .carta {
@@ -219,15 +245,11 @@
 .mid {
   display: flex;
   flex-direction: row;
-  align-items: center;      /* Centra verticalmente */
-  justify-content: center;  /* Centra horizontalmente */
+  align-items: center;      
+  justify-content: center;
   margin: 0;
-
-  /* --- Añade esto --- */
   width: 100%; 
-
-  /* Opcional: Añade espacio entre el texto y el botón */
-  gap: 1.5rem; /* o 20px, lo que prefieras */
+  gap: 1.5rem;
 }
 
 /* === Perfil activo/inactivo === */
@@ -332,7 +354,7 @@
 }
 
 .btn-volver {
-  background-color: #10b981; /* verde */
+  background-color: #10b981; 
   color: white;
 }
 
@@ -342,7 +364,7 @@
 }
 
 .btn-salir {
-  background-color: #ef4444; /* rojo */
+  background-color: #ef4444; 
   color: white;
 }
 
@@ -405,7 +427,7 @@
   background-color: #ffd700;
 }
 
-/* 🔵 Color alternativo si es turno de CPU */
+/* Color alternativo si es turno de CPU */
 .cpu-turno .turno-btn {
   background-color: #3b82f6;
   color: white;

@@ -1,4 +1,3 @@
-// src/pages/Arena/ArenaBatalla.tsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { inicializarPartida } from "./logic/batallaUtils";
@@ -37,7 +36,6 @@ export default function ArenaBatalla() {
     setEstado(estadoInicial);
   }, []);
 
- 
   // === Colocar carta ===
   const colocarCartaEnCampo = (slotIndex: number) => {
     if (turnoActual === "cpu") return; // Bloquea si no es turno del jugador
@@ -146,10 +144,6 @@ export default function ArenaBatalla() {
 
     return sinJugador && sinCpu;
   };
-
-  // === Resolver combate ===
-  // === Delay utilitario ===
-  const esperar = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
   // === Resolver combate secuencial ===
   const resolverCombate = async () => {
@@ -331,7 +325,11 @@ export default function ArenaBatalla() {
 
         {/* === Jugador === */}
 
-        <div className={`player-section ${turnoActual === "cpu" ? "cpu-turno" : ""}`}>
+        <div
+          className={`player-section ${
+            turnoActual === "cpu" ? "cpu-turno" : ""
+          }`}
+        >
           <div className="campo">
             {estado.jugador.campo.map((carta: any, i: number) => {
               const esNueva = carta?.turnoColocada === estado.ronda;
@@ -342,8 +340,6 @@ export default function ArenaBatalla() {
                 : cartaSeleccionada && turnoActual === "jugador"
                 ? "#00FFFF"
                 : "#888";
-
-              const esSlotVacio = !carta;
 
               return (
                 <div
@@ -401,14 +397,15 @@ export default function ArenaBatalla() {
                   </div>
                 </div>
               ))}
-            </div>
 
-            <div className="baraja">
-              <img src="/cartabaraja.png" alt="baraja jugador" />
-              <p>{estado.jugador.baraja.length}/10</p>
+              <div className="baraja">
+                <img src="/cartabaraja.png" alt="baraja jugador" />
+                <p>{estado.jugador.baraja.length}/10</p>
+              </div>
             </div>
           </div>
-              {/* Botones */}
+
+          {/* Botones */}
           <div
             className={`perfil-container ${
               turnoActual === "jugador" ? "turno-activo" : "turno-inactivo"
@@ -430,17 +427,17 @@ export default function ArenaBatalla() {
               <p>Vida: {estado.jugador.vida}</p>
             </div>
             <div>
-<button
-  onClick={resolverCombate}
-  className="turno-btn"
-  disabled={bloqueado}
->
-  {bloqueado
-    ? "Resolviendo..."
-    : turnoActual === "jugador"
-    ? "Atacar"
-    : "Defender"}
-</button>
+              <button
+                onClick={resolverCombate}
+                className="turno-btn"
+                disabled={bloqueado}
+              >
+                {bloqueado
+                  ? "Resolviendo..."
+                  : turnoActual === "jugador"
+                  ? "Atacar"
+                  : "Defender"}
+              </button>
 
               <button
                 onClick={() => setMostrarRendirse(true)}
