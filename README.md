@@ -43,7 +43,6 @@ kame-game/
 │   ├── hooks/            # Hooks personalizados
 │   ├── App.tsx           # Componente principal
 │   ├── main.tsx          # Punto de entrada de la aplicación
-│   └── router.tsx        # Configuración de rutas
 ├── package.json
 ├── tsconfig.json
 ├── vite.config.ts
