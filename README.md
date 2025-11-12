@@ -31,14 +31,16 @@ npm install
 Ejecuta el proyecto
 npm run dev
 
-## Estructura del proyecto
+##  Estructura del Proyecto
+
+```bash
 kame-game/
 ├── public/               # Recursos estáticos
 ├── src/
-│   ├── components/       # Componentes ordenados por carpetas
-│   ├── context/          # Logica de inicio de sesión 
-│   ├── db/               # Estructura de los datos y cargar la información 
-│   ├── pages/            # Paginas construidas con los componentes
+│   ├── assets/           # Imágenes y sonidos del juego
+│   ├── components/       # Componentes reutilizables de React
+│   ├── pages/            # Páginas del juego (pantallas principales)
+│   ├── hooks/            # Hooks personalizados
 │   ├── App.tsx           # Componente principal
 │   ├── main.tsx          # Punto de entrada de la aplicación
 │   └── router.tsx        # Configuración de rutas
