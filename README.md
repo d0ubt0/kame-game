@@ -4,6 +4,12 @@
 Kame Game esta desarrollado con **React + Vite + TypeScript**.  
 El proyecto usa **React Router** para la navegación y ESLint para mantener un código limpio y consistente.
 
+Angel Efrain Pimienta Duran
+Sergio Ahumada Ortiz
+Sebastian Pabon Nuñez
+Jorge Humberto Gaviria Botero
+
+
 ---
 
 ## Requisitos Previos
