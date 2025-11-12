@@ -1,10 +1,12 @@
-/* Inicio.css */
-
 /* Reset y base */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 /* Imagen Hero */
@@ -14,31 +16,16 @@ img[src="/yugioh-home.webp"] {
   object-fit: cover;
   object-position: center;
   display: block;
-  position: relative;
-}
-
-/* Overlay oscuro para mejor contraste */
-img[src="/yugioh-home.webp"]::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(180deg, transparent 50%, rgba(10, 0, 21, 0.8) 100%);
-  pointer-events: none;
 }
 
 /* Store Container */
 .StoreContainer {
-  /* max-width: 1400px; */
   margin: 0 auto;
   padding: 80px 70px 100px;
   background: linear-gradient(180deg, #0a0015 0%, #0f051d 50%, #1a0b2e 100%);
   min-height: calc(100vh - 450px);
   position: relative;
 }
-
 
 .StoreContainer::before {
   content: "";
@@ -56,7 +43,7 @@ img[src="/yugioh-home.webp"]::after {
 
 /* Section Title */
 .section-title {
-  font-size: 42px;
+  font-size: clamp(26px, 5vw, 42px);
   font-weight: 700;
   color: #ffd700;
   text-align: center;
@@ -67,9 +54,9 @@ img[src="/yugioh-home.webp"]::after {
   z-index: 1;
   text-transform: uppercase;
   padding-bottom: 20px;
+  transition: text-shadow 0.3s ease;
 }
 
-/* Línea decorativa debajo del título */
 .section-title::after {
   content: "";
   position: absolute;
@@ -82,25 +69,27 @@ img[src="/yugioh-home.webp"]::after {
   border-radius: 2px;
 }
 
-/* Efecto hover en el título */
 .section-title:hover {
   text-shadow: 0 2px 30px rgba(255, 215, 0, 0.5);
-  transition: text-shadow 0.3s ease;
 }
 
 /* Cards Store Container */
 .CardsStoreContainer {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 35px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: clamp(25px, 3vw, 40px);
   margin-bottom: 100px;
   position: relative;
   z-index: 1;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* Separación visual entre secciones */
-.CardsStoreContainer:last-of-type {
-  margin-bottom: 60px;
+/* Asegurar que cada carta tenga un ancho consistente */
+.CardsStoreContainer > * {
+  width: 100%;
+  max-width: 100%;
 }
 
 /* Cart Button Flotante */
@@ -125,7 +114,6 @@ img[src="/yugioh-home.webp"]::after {
   border: 3px solid rgba(255, 215, 0, 0.2);
 }
 
-/* Hover del botón de carrito */
 .CartButton:hover {
   transform: translateY(-8px) scale(1.1);
   box-shadow: 
@@ -137,10 +125,8 @@ img[src="/yugioh-home.webp"]::after {
 
 .CartButton:active {
   transform: translateY(-5px) scale(1.05);
-  transition: all 0.1s ease;
 }
 
-/* Icono del carrito */
 .CartButton svg {
   width: 38px;
   height: 38px;
@@ -175,15 +161,9 @@ img[src="/yugioh-home.webp"]::after {
 }
 
 @keyframes badgePop {
-  0% {
-    transform: scale(0);
-  }
-  50% {
-    transform: scale(1.2);
-  }
-  100% {
-    transform: scale(1);
-  }
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
 }
 
 /* Responsive Design */
@@ -191,14 +171,9 @@ img[src="/yugioh-home.webp"]::after {
   .StoreContainer {
     padding: 60px 30px 80px;
   }
-
+  
   .CardsStoreContainer {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 30px;
-  }
-
-  .section-title {
-    font-size: 36px;
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -212,14 +187,13 @@ img[src="/yugioh-home.webp"]::after {
   }
 
   .section-title {
-    font-size: 32px;
     margin-bottom: 35px;
   }
 
   .CardsStoreContainer {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 25px;
     margin-bottom: 70px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
   }
 
   .CartButton {
@@ -245,15 +219,14 @@ img[src="/yugioh-home.webp"]::after {
   }
 
   .section-title {
-    font-size: 26px;
     margin-bottom: 30px;
     letter-spacing: 1px;
   }
 
   .CardsStoreContainer {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 20px;
     margin-bottom: 60px;
+    grid-template-columns: 1fr;
+    gap: 25px;
   }
 
   .CartButton {
@@ -295,15 +268,4 @@ img[src="/yugioh-home.webp"]::after {
 
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #ffed4e, #ffd700);
-}
-
-/* Smooth scroll */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Mejora de rendimiento */
-.CardsStoreContainer,
-.CartButton {
-  will-change: transform;
 }
