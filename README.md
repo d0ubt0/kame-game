@@ -40,7 +40,6 @@ kame-game/
 │   ├── assets/           # Imágenes y sonidos del juego
 │   ├── components/       # Componentes reutilizables de React
 │   ├── pages/            # Páginas del juego (pantallas principales)
-│   ├── hooks/            # Hooks personalizados
 │   ├── App.tsx           # Componente principal
 │   ├── main.tsx          # Punto de entrada de la aplicación
 ├── package.json
