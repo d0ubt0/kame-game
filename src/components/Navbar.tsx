@@ -16,7 +16,7 @@ export function Navbar() {
       <ul className="navLinks">
         <div className="logo">
           <Link to="/">
-            <img src="../public/puzzle-millennium.png" alt="Logo" className="icono-logo"/>
+            <img src="../public/logo-p.png" alt="Logo" className="icono-logo"/>
             <span>Yu-Gi-Oh Store</span>
           </Link>
         </div>
