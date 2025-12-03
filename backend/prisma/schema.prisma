@@ -1,0 +1,57 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 1. Usuario
+model User {
+  id         Int        @id @default(autoincrement())
+  username   String
+  email      String     @unique
+  password   String
+  role       String     @default("cliente") // 'admin' o 'cliente'
+  collection UserCard[] // Relación con la tabla intermedia de colección
+}
+
+// 2. Carta (Adaptada a tus datos)
+model Card {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+  attack      Int
+  defense     Int
+  price       Int // Precio de la carta individual
+  image       String
+
+  // Relaciones
+  packs  Pack[] // Una carta puede salir en muchos paquetes
+  owners UserCard[] // Una carta puede estar en la colección de muchos usuarios
+}
+
+// 3. Paquetes (Packs)
+model Pack {
+  id    Int    @id @default(autoincrement())
+  name  String
+  price Int
+  image String
+  cards Card[] // Relación: Un paquete contiene muchas cartas
+}
+
+// 4. Tabla Intermedia: Colección del Usuario
+// Guarda qué cartas tiene el usuario y cuántas de cada una
+model UserCard {
+  userId   Int
+  cardId   Int
+  quantity Int @default(1)
+
+  user User @relation(fields: [userId], references: [id])
+  card Card @relation(fields: [cardId], references: [id])
+
+  @@id([userId, cardId]) // Clave compuesta para evitar duplicados
+}

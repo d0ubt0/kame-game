@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    /* Módulos y Resolución */
+    "target": "es2020",
+    "module": "commonjs",                  /* Clave: Traduce imports a require */
+    "moduleResolution": "node",            /* Clave: Resolución estándar de Node */
+    "esModuleInterop": true,               /* Clave: Permite interoperar CJS y ESM */
+    "verbatimModuleSyntax": false,         /* SOLUCIÓN: Desactivamos esto para permitir la traducción */
+    
+    /* Configuración de Salida */
+    "outDir": "./dist",
+    "rootDir": "./src",
+    
+    /* Estrictez y Calidad */
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
