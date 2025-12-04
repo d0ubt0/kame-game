@@ -1,14 +1,22 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
-import type { Usuario } from "../db/yugioh";
+
+// Definimos la forma del usuario que viene de la DB
+export interface Usuario {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+  // No incluimos password aquí por seguridad
+}
 
 interface AuthContextType {
   isAuthenticated: boolean;
   user: Usuario | null;
-  users: Usuario[];
-  login: (email: string, password: string) => boolean;
+  // Cambiamos las funciones para que sean asíncronas (Promesas)
+  login: (email: string, password: string) => Promise<boolean>;
+  register: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
-  register: (email: string, password: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -16,75 +24,65 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<Usuario | null>(null);
-  const [users, setUsers] = useState<Usuario[]>([]);
 
-  // === Cargar usuarios desde localStorage ===
+  // 1. Al cargar la página, revisamos si ya había sesión iniciada
   useEffect(() => {
-    try {
-      const savedUsers = localStorage.getItem("users");
-      const savedUser = localStorage.getItem("user");
-
-      if (savedUsers) {
-        const parsedUsers = JSON.parse(savedUsers);
-        if (Array.isArray(parsedUsers)) {
-          setUsers(parsedUsers);
-        } else {
-          console.warn("⚠️ Datos de usuarios inválidos. Reiniciando...");
-          localStorage.removeItem("users");
-          setUsers([]);
-        }
-      } else {
-        setUsers([]);
-      }
-
-      if (savedUser) {
-        const parsedUser = JSON.parse(savedUser);
-        setUser(parsedUser);
-        setIsAuthenticated(true);
-      }
-    } catch (error) {
-      console.error("❌ Error al cargar usuarios desde localStorage:", error);
-      setUsers([]);
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+      setIsAuthenticated(true);
     }
   }, []);
 
-  // === Iniciar sesión ===
-  const login = (email: string, password: string): boolean => {
-    const foundUser = users.find(
-      (u) => u.email === email && u.password === password
-    );
+  // 2. Función LOGIN (Conectada al Backend)
+  const login = async (email: string, password: string): Promise<boolean> => {
+    try {
+      const response = await fetch('http://localhost:3001/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
 
-    if (foundUser) {
-      setIsAuthenticated(true);
-      setUser(foundUser);
-      localStorage.setItem("user", JSON.stringify(foundUser));
-      return true;
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData);
+        setIsAuthenticated(true);
+        localStorage.setItem("user", JSON.stringify(userData)); // Guardamos sesión
+        return true;
+      } else {
+        return false; // Credenciales incorrectas
+      }
+    } catch (error) {
+      console.error("Error en login:", error);
+      return false;
     }
-    return false;
   };
 
-  // === Registrar nuevo usuario ===
-  const register = (email: string, password: string): boolean => {
-    const exists = users.some((u) => u.email === email);
-    if (exists) return false;
+  // 3. Función REGISTER (Conectada al Backend)
+  const register = async (email: string, password: string): Promise<boolean> => {
+    try {
+      const response = await fetch('http://localhost:3001/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
 
-    const username = email.split("@")[0];
-
-    const newUser: Usuario = {
-      id: Date.now(),
-      username,
-      email,
-      password,
-      role: "cliente",
-    };
-
-    const updatedUsers = [...users, newUser];
-    setUsers(updatedUsers);
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
-    return true;
+      if (response.ok) {
+        // Opcional: Auto-login después de registrarse
+        const userData = await response.json();
+        setUser(userData);
+        setIsAuthenticated(true);
+        localStorage.setItem("user", JSON.stringify(userData));
+        return true;
+      } else {
+        return false; // Email ya existe
+      }
+    } catch (error) {
+      console.error("Error en registro:", error);
+      return false;
+    }
   };
 
-  // === Cerrar sesión ===
   const logout = () => {
     setIsAuthenticated(false);
     setUser(null);
@@ -92,9 +90,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider
-      value={{ isAuthenticated, user, users, login, logout, register }}
-    >
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );
@@ -102,6 +98,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used inside AuthProvider");
+  if (!context) throw new Error("useAuth debe usarse dentro de un AuthProvider");
   return context;
 };

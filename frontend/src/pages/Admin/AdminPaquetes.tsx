@@ -4,8 +4,9 @@ import PaqueteForm from '../../components/Admin/Paquete/PaqueteForm';
 import { PageTitle } from '../../components/PageTitle';
 import type { Carta, Paquete, PaqueteFormData } from '../../db/yugioh';
 
-const LOCAL_STORAGE_CARTAS = 'cartas';
-const LOCAL_STORAGE_PAQUETES = 'paquetes';
+// Endpoints
+const API_PACKS = 'http://localhost:3001/api/packs';
+const API_CARDS = 'http://localhost:3001/api/cards';
 
 function ManagePaquetes() {
   const [paquetes, setPaquetes] = useState<Paquete[]>([]);
@@ -14,67 +15,103 @@ function ManagePaquetes() {
   const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
   const [paqueteToEdit, setPaqueteToEdit] = useState<Paquete | null>(null);
 
-  useEffect(() => {
+  // 1. CARGAR DATOS (Paquetes y Cartas)
+  const fetchData = async () => {
+    setIsLoading(true);
     try {
-      const storedCartas = localStorage.getItem(LOCAL_STORAGE_CARTAS);
-      const storedPaquetes = localStorage.getItem(LOCAL_STORAGE_PAQUETES);
+      // Hacemos las dos peticiones en paralelo
+      const [packsRes, cardsRes] = await Promise.all([
+        fetch(API_PACKS),
+        fetch(API_CARDS)
+      ]);
 
-      if (storedCartas) {
-        const parsedCartas = JSON.parse(storedCartas);
-        if (Array.isArray(parsedCartas)) setAllCartas(parsedCartas);
+      if (packsRes.ok && cardsRes.ok) {
+        const packsData = await packsRes.json();
+        const cardsData = await cardsRes.json();
+        
+        setPaquetes(packsData);
+        setAllCartas(cardsData);
       }
-
-      if (storedPaquetes) {
-        const parsedPaquetes = JSON.parse(storedPaquetes);
-        if (Array.isArray(parsedPaquetes)) setPaquetes(parsedPaquetes);
-      }
-    } catch (err) {
-      console.error('❌ Error cargando datos de localStorage:', err);
+    } catch (error) {
+      console.error("Error cargando datos:", error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
-  useEffect(() => {
-    if (!isLoading) {
-      localStorage.setItem(LOCAL_STORAGE_PAQUETES, JSON.stringify(paquetes));
-    }
-  }, [paquetes, isLoading]);
+  // 2. GUARDAR (CREAR O EDITAR)
+  const handleFormSubmit = async (formData: PaqueteFormData) => {
+    try {
+      // Convertimos el array de strings ["1", "2"] que manda el formulario
+      // a lo que espera el backend (aunque el backend ya hace un casteo,
+      // es bueno asegurarse de enviar la estructura correcta).
+      const payload = {
+        name: formData.name,
+        image: formData.image,
+        price: formData.price,
+        cards: formData.cards // Array de IDs
+      };
 
-  useEffect(() => {
-    if (!isLoading) {
-      localStorage.setItem(LOCAL_STORAGE_CARTAS, JSON.stringify(allCartas));
-    }
-  }, [allCartas, isLoading]);
+      if (paqueteToEdit) {
+        // --- EDITAR (PUT) ---
+        const response = await fetch(`${API_PACKS}/${paqueteToEdit.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
 
-  const handleFormSubmit = (formData: PaqueteFormData) => {
-    if (paqueteToEdit) {
-      const updated = paquetes.map((p) =>
-        p.id === paqueteToEdit.id ? { ...paqueteToEdit, ...formData } : p
-      );
-      setPaquetes(updated);
-    } else {
-      const newPaquete: Paquete = { ...formData, id: Date.now() };
-      setPaquetes([...paquetes, newPaquete]);
+        if (response.ok) {
+          alert("Paquete actualizado correctamente");
+          fetchData();
+        }
+      } else {
+        // --- CREAR (POST) ---
+        const response = await fetch(API_PACKS, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (response.ok) {
+          alert("Paquete creado correctamente");
+          fetchData();
+        }
+      }
+
+      setIsFormVisible(false);
+      setPaqueteToEdit(null);
+
+    } catch (error) {
+      console.error("Error guardando paquete:", error);
+      alert("Error al guardar.");
     }
-    setIsFormVisible(false);
-    setPaqueteToEdit(null);
   };
 
-  // === Editar ===
-  const handleEditClick = (paquete: Paquete) => {
-    setPaqueteToEdit(paquete);
-    setIsFormVisible(true);
-  };
+  // 3. ELIMINAR (DELETE)
+  const handleDelete = async (paqueteId: number | string) => {
+    if (window.confirm('¿Estás seguro de eliminar este paquete?')) {
+      try {
+        const response = await fetch(`${API_PACKS}/${paqueteId}`, {
+          method: 'DELETE',
+        });
 
-  // === Eliminar ===
-  const handleDeleteClick = (paqueteId: number | string) => {
-    if (window.confirm('¿Estás seguro de que quieres eliminar este paquete?')) {
-      setPaquetes(paquetes.filter((p) => p.id !== paqueteId));
+        if (response.ok) {
+          // Filtramos localmente para actualizar rápido
+          setPaquetes(prev => prev.filter((p) => p.id !== Number(paqueteId)));
+        } else {
+          alert("No se pudo eliminar el paquete.");
+        }
+      } catch (error) {
+        console.error("Error eliminando:", error);
+      }
     }
   };
 
-  // === Cancelar formulario ===
+  // === UI Helpers ===
   const handleCancelForm = () => {
     setIsFormVisible(false);
     setPaqueteToEdit(null);
@@ -85,40 +122,58 @@ function ManagePaquetes() {
     setIsFormVisible(true);
   };
 
+  const handleEditPaquete = (pack: Paquete) => {
+    // Necesitamos pasar el objeto completo al formulario para que
+    // pueda pre-llenar las cartas seleccionadas
+    setPaqueteToEdit(pack);
+    setIsFormVisible(true);
+  };
+
   return (
     <div>
-      <PageTitle title="Gestión de Paquetes" />
+      <PageTitle title="Gestión de Paquetes (Base de Datos)" />
+      
       <div style={{ padding: '2rem', height: '100%' }}>
-        
-        <button style={{ marginBottom: '16px', marginRight: '8px', backgroundColor: '#E6C200', color: 'black' }} onClick={() => window.history.back()}>
+        <button 
+          style={{ marginBottom: '16px', marginRight: '8px', backgroundColor: '#E6C200', color: 'black', border: 'none', padding: '10px 20px', cursor: 'pointer', borderRadius: '4px' }} 
+          onClick={() => window.history.back()}
+        >
             Volver
         </button>
+
         <hr style={{ margin: '24px 0' }} />
+        
         {!isFormVisible && (
-          <button onClick={showCreateForm} style={{ marginBottom: '16px' }}>
+          <button 
+            onClick={showCreateForm} 
+            style={{ marginBottom: '16px', padding: '10px 20px', backgroundColor: '#4CAF50', color: 'white', border: 'none', cursor: 'pointer', borderRadius: '4px' }}
+          >
             + Agregar Nuevo Paquete
           </button>
         )}
 
-        {isFormVisible && (
-          <PaqueteForm
-            initialData={paqueteToEdit}
-            onSubmit={handleFormSubmit}
-            onCancel={handleCancelForm}
-            allCartas={allCartas}
-          />
-        )}
-
-        <h3>Paquetes Existentes</h3>
-
-        {isLoading ? (
-          <p>Cargando paquetes y cartas...</p>
+        {isFormVisible ? (
+          <div style={{ backgroundColor: '#222', padding: '20px', borderRadius: '8px', color: 'white' }}>
+            <PaqueteForm
+              initialData={paqueteToEdit}
+              onSubmit={handleFormSubmit}
+              onCancel={handleCancelForm}
+              allCartas={allCartas} // Pasamos las cartas reales de la DB
+            />
+          </div>
         ) : (
-          <PaqueteTable
-            paquetes={paquetes}
-            onEdit={handleEditClick}
-            onDelete={handleDeleteClick}
-          />
+          <>
+            <h3>Paquetes Existentes</h3>
+            {isLoading ? (
+              <p>Cargando paquetes...</p>
+            ) : (
+              <PaqueteTable 
+                paquetes={paquetes} 
+                onEdit={handleEditPaquete} 
+                onDelete={handleDelete} 
+              />
+            )}
+          </>
         )}
       </div>
     </div>

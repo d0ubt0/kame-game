@@ -2,51 +2,85 @@ import { useState, useEffect } from 'react';
 import { PageTitle } from '../components/PageTitle';
 import { PaymentForm } from './Carrito/PaymentForm';
 import './Carrito.css'
-import { placeholderCards, placeholderPacks } from '../db/db';
 import { CartItem } from './Carrito/CartItem';
 import { useNavigate } from "react-router-dom";
+import { useAuth } from '../context/AuthContext';
 
-
-
+// Actualizamos la interfaz para incluir 'cards' (opcional, solo para paquetes)
 interface Product {
   id: number;
   name: string;
   price: number;
   image: string;
   quantity: number;
+  type: 'card' | 'pack';
+  cards?: any[]; // <--- ¡ESTO FALTABA!
 }
-
 
 export function Carrito({selectedCards, setSelectedCards}:
   {selectedCards: Set<number>; setSelectedCards: (cards: Set<number>) => void}) {
 
   const navigate = useNavigate();
-
-  const products = Array.from(selectedCards);
-
-  const allProducts = [...placeholderCards, ...placeholderPacks];
- 
-
+  const { user } = useAuth();
+  
   const [cart, setCart] = useState<Product[]>([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
 
   useEffect(() => {
-    const selectedProducts = allProducts
-      .filter((p) => selectedCards.has(p.id))
-      .map((p) => ({
-        ...p,
-        quantity: 1, // cantidad inicial
-      }));
-    setCart(selectedProducts);
+    const fetchProducts = async () => {
+      try {
+        const [cardsRes, packsRes] = await Promise.all([
+          fetch('http://localhost:3001/api/cards'),
+          fetch('http://localhost:3001/api/packs') // Este endpoint ya trae las cartas dentro
+        ]);
+
+        const cardsData = await cardsRes.json();
+        const packsData = await packsRes.json();
+
+        // Unimos todo identificando el tipo
+        const allProducts = [
+          ...cardsData.map((c: any) => ({ ...c, type: 'card' })),
+          ...packsData.map((p: any) => ({ ...p, type: 'pack' }))
+        ];
+
+        // Filtramos los seleccionados
+        const selectedProducts = allProducts
+          .filter((p: any) => selectedCards.has(p.id))
+          .map((p: any) => ({
+            id: p.id,
+            name: p.name,
+            price: p.price,
+            image: p.image,
+            type: p.type,
+            quantity: 1,
+            // --- CORRECCIÓN CRÍTICA AQUÍ ---
+            // Si el producto tiene la propiedad 'cards' (es un paquete), ¡la guardamos!
+            cards: p.cards || [] 
+          }));
+
+        setCart(selectedProducts);
+      } catch (error) {
+        console.error("Error cargando productos:", error);
+      } finally {
+        setIsLoadingProducts(false);
+      }
+    };
+
+    if (selectedCards.size > 0) {
+      fetchProducts();
+    } else {
+      setCart([]);
+      setIsLoadingProducts(false);
+    }
   }, [selectedCards]);
 
-  // Incrementar cantidad
+  // --- Lógica del Carrito (Sin cambios) ---
   const handleIncrease = (id: number) => {
     setCart((prev) =>
       prev.map((p) => (p.id === id ? { ...p, quantity: p.quantity + 1 } : p))
     );
   };
 
-  // Decrementar cantidad (mínimo 1)
   const handleDecrease = (id: number) => {
     setCart((prev) =>
       prev.map((p) =>
@@ -55,78 +89,63 @@ export function Carrito({selectedCards, setSelectedCards}:
     );
   };
 
-  // Eliminar del carrito
   const handleRemove = (id: number) => {
-    const updatedSet = new Set(selectedCards);
-    updatedSet.delete(id);
-    setSelectedCards(updatedSet);
-    setCart((prev) => prev.filter((p) => p.id !== id));
+    const newCart = cart.filter((p) => p.id !== id);
+    setCart(newCart);
+    const newSelected = new Set(selectedCards);
+    newSelected.delete(id);
+    setSelectedCards(newSelected);
+    localStorage.setItem('selectedCards', JSON.stringify(Array.from(newSelected)));
   };
 
-  const total = cart.reduce((sum, p) => sum + p.price * p.quantity, 0);
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-  const handlePayment = () => {
-  if (cart.length === 0) {
-    alert("🛒 Su carrito está vacío. Será redirigido a la tienda.");
-    navigate("/");
-    return;
-  }
-
-  const userStorage = localStorage.getItem("user");
-  let user = userStorage ? JSON.parse(userStorage) : { coleccion: [] };
-
-  const nuevaColeccion = [...user.coleccion];
-
-  const purchasedPacks = cart.filter(item =>
-    placeholderPacks.some(pack => pack.id === item.id)
-  );
-  const purchasedSingles = cart.filter(item =>
-    placeholderCards.some(card => card.id === item.id)
-  );
-
-  cart.forEach(item => {
-    const pack = placeholderPacks.find(p => p.id === item.id);
-    if (pack) {
-      pack.cards.forEach(cardId => {
-        const existente = nuevaColeccion.find((c: any) => c.cartaId === Number(cardId));
-        if (existente) {
-          existente.cantidad += item.quantity;
-        } else {
-          nuevaColeccion.push({ cartaId: Number(cardId), cantidad: item.quantity });
-        }
-      });
-    } else {
-      const existente = nuevaColeccion.find((c: any) => c.cartaId === item.id);
-      if (existente) {
-        existente.cantidad += item.quantity;
-      } else {
-        nuevaColeccion.push({ cartaId: item.id, cantidad: item.quantity });
-      }
+  const handlePay = async () => {
+    if (!user) {
+      alert("Debes iniciar sesión para realizar la compra.");
+      navigate("/login");
+      return;
     }
-  });
 
-  // Guardar colección actualizada
-  user.coleccion = nuevaColeccion;
-  localStorage.setItem("user", JSON.stringify(user));
+    const purchasedPacks = cart.filter(p => p.type === 'pack');
+    const purchasedSingles = cart.filter(p => p.type === 'card');
 
-  //Guardar la última compra
-  localStorage.setItem(
-    "lastPurchase",
-    JSON.stringify({ packs: purchasedPacks, singles: purchasedSingles })
-  );
+    try {
+      const response = await fetch('http://localhost:3001/api/purchase', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          items: cart 
+        })
+      });
 
-  // Limpiar carrito
-  setCart([]);
-  setSelectedCards(new Set());
-  localStorage.removeItem("selectedCards");
+      if (!response.ok) throw new Error("Error en el pago");
 
-  // Redirigir a la animación
-  navigate("/Carrito/PagoAnimacion", { state: { packs: purchasedPacks, singles: purchasedSingles } });
-};
+      // Guardamos la compra en local con TODOS los datos (incluyendo las cartas dentro de los paquetes)
+      localStorage.setItem(
+        "lastPurchase",
+        JSON.stringify({ packs: purchasedPacks, singles: purchasedSingles })
+      );
+
+      setCart([]);
+      setSelectedCards(new Set());
+      localStorage.removeItem("selectedCards");
+
+      navigate("/Carrito/PagoAnimacion", { 
+        state: { packs: purchasedPacks, singles: purchasedSingles } 
+      });
+
+    } catch (error) {
+      console.error(error);
+      alert("Hubo un problema procesando tu compra.");
+    }
+  };
 
 
-
-  
+  if (isLoadingProducts) {
+    return <div style={{color:'white', textAlign:'center', marginTop: '50px'}}>Cargando carrito...</div>;
+  }
 
   return (
     <div>
@@ -134,7 +153,7 @@ export function Carrito({selectedCards, setSelectedCards}:
 
       <div className='panel-carrito'>
         <div className='carrito'>
-          {products.length === 0 
+          {cart.length === 0 
           ?(<p>El Carrito está vacio.</p>)
           :(
           <>
@@ -157,15 +176,12 @@ export function Carrito({selectedCards, setSelectedCards}:
             </div>
 
           </>)}
-          
-        </div>
-        <div className='panel-formulario'>
-          <PaymentForm onPay={handlePayment}/>
         </div>
         
+        {cart.length > 0 && (
+           <PaymentForm onPay={handlePay}/>
+        )}
       </div>
-
     </div>
-  );
-  
+  )
 }

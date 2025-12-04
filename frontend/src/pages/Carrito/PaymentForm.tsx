@@ -1,13 +1,21 @@
 import './PaymentForm.css'
 
 export function PaymentForm({ onPay }: { onPay: () => void }) {
+    
+    // Función intermedia para evitar que el formulario recargue la página
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault(); // <--- ¡ESTO ES LA CLAVE! Detiene la recarga
+        onPay();            // Ejecuta tu lógica de pago
+    };
+
     return(
         <div className="formulario">
             <div className='contenedor-titulo'>
                 <h3 className='titulo-formulario'>INFORMACIÓN DE PAGO</h3>
             </div>
         
-            <form className='contenedor-items'>
+            {/* Agregamos onSubmit preventDefault por seguridad extra */}
+            <form className='contenedor-items' onSubmit={(e) => e.preventDefault()}>
                 <div className='items'>
                     <label htmlFor="">NOMBRE DEL TITULAR</label>
                     <input type="text" />
@@ -31,7 +39,12 @@ export function PaymentForm({ onPay }: { onPay: () => void }) {
                     </div>
                 </div>
                 <div className='contenedor-boton'>
-                    <button className='boton-pagar' onClick={onPay}>
+                    {/* Cambiamos a type="button" y usamos nuestro handleClick */}
+                    <button 
+                        type="button" 
+                        className='boton-pagar' 
+                        onClick={handleClick}
+                    >
                     REALIZAR PAGO
                     </button>
                 </div>

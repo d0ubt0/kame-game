@@ -16,10 +16,18 @@ export default function ArenaBatalla() {
 
   // === Inicialización ===
   useEffect(() => {
+    // 1. Cargar cartas del Jugador
+    // NOTA: Asegúrate de que la key sea la misma que usaste en SeleccionCartas 
+    // (en el paso anterior usamos "cartasSeleccionadas", aquí tenías "cartasPlayer")
     const seleccionadas = JSON.parse(
-      localStorage.getItem("cartasSeleccionadas") || "[]"
+      localStorage.getItem("cartasSeleccionadas") || 
+      localStorage.getItem("cartasPlayer") || "[]"
     );
-    const cartasBase = JSON.parse(localStorage.getItem("cartas") || "[]");
+
+    // 2. Cargar cartas de la CPU
+    const cpuSeleccionadas = JSON.parse(
+      localStorage.getItem("cartasCPU") || "[]"
+    );
 
     if (seleccionadas.length < 10) {
       alert("Necesitas 10 cartas para entrar a la arena");
@@ -27,18 +35,19 @@ export default function ArenaBatalla() {
       return;
     }
 
-    const cartasJugador = seleccionadas
-      .map((id: number) => cartasBase.find((c: any) => c.id === id))
-      .filter(Boolean)
-      .map((c: any) => ({ ...c, hp: c.defense }));
+    // Si la CPU no tiene cartas (ej. acceso directo por URL), podrías redirigir o dejar que inicializarPartida genere randoms
+    if (cpuSeleccionadas.length < 10) {
+       console.warn("La CPU no tiene cartas guardadas, se generarán aleatorias.");
+    }
 
-    const estadoInicial = inicializarPartida(cartasJugador);
+    // Llamamos a inicializar pasando AMBOS mazos
+    const estadoInicial = inicializarPartida(seleccionadas, cpuSeleccionadas);
     setEstado(estadoInicial);
   }, []);
 
   // === Colocar carta ===
   const colocarCartaEnCampo = (slotIndex: number) => {
-    if (turnoActual === "cpu") return; // Bloquea si no es turno del jugador
+    if (turnoActual === "cpu") return;
     if (!estado || !cartaSeleccionada) return;
     if (estado.jugador.campo[slotIndex]) {
       alert("Ese slot ya está ocupado.");
@@ -71,7 +80,7 @@ export default function ArenaBatalla() {
 
   // === Retirar carta ===
   const retirarCartaDelCampo = (slotIndex: number) => {
-    if (turnoActual === "cpu") return; //  Bloquea si no es turno del jugador
+    if (turnoActual === "cpu") return;
     if (!estado) return;
     const carta = estado.jugador.campo[slotIndex];
     if (!carta) return;
@@ -147,8 +156,8 @@ export default function ArenaBatalla() {
 
   // === Resolver combate secuencial ===
   const resolverCombate = async () => {
-    if (!estado || bloqueado) return; //  si ya está en animación, no hacer nada
-    setBloqueado(true); //  bloquea interacciones
+    if (!estado || bloqueado) return;
+    setBloqueado(true);
     let nuevoEstado = { ...estado };
     let logTurno: string[] = [];
 
@@ -186,13 +195,13 @@ export default function ArenaBatalla() {
             logTurno.push(
               `${logPrefix} atacó directamente causando ${atacante.attack} de daño.`
             );
-            activarAnimacion("cpu-perfil", "perfil-daño"); //  daña imagen CPU
+            activarAnimacion("cpu-perfil", "perfil-daño");
           } else {
             nuevoEstado.jugador.vida -= atacante.attack;
             logTurno.push(
               `${logPrefix} atacó directamente causando ${atacante.attack} de daño.`
             );
-            activarAnimacion("jugador-perfil", "perfil-daño"); //  daña imagen Jugador
+            activarAnimacion("jugador-perfil", "perfil-daño");
           }
         }
 
@@ -201,37 +210,12 @@ export default function ArenaBatalla() {
       }
     };
 
-    // --- Determinar quién ataca primero ---
     if (turnoActual === "jugador") {
-      await atacar(
-        nuevoEstado.jugador.campo,
-        nuevoEstado.cpu.campo,
-        "jugador",
-        "cpu",
-        "El jugador"
-      );
-      await atacar(
-        nuevoEstado.cpu.campo,
-        nuevoEstado.jugador.campo,
-        "cpu",
-        "jugador",
-        "La CPU"
-      );
+      await atacar(nuevoEstado.jugador.campo, nuevoEstado.cpu.campo, "jugador", "cpu", "El jugador");
+      await atacar(nuevoEstado.cpu.campo, nuevoEstado.jugador.campo, "cpu", "jugador", "La CPU");
     } else {
-      await atacar(
-        nuevoEstado.cpu.campo,
-        nuevoEstado.jugador.campo,
-        "cpu",
-        "jugador",
-        "La CPU"
-      );
-      await atacar(
-        nuevoEstado.jugador.campo,
-        nuevoEstado.cpu.campo,
-        "jugador",
-        "cpu",
-        "El jugador"
-      );
+      await atacar(nuevoEstado.cpu.campo, nuevoEstado.jugador.campo, "cpu", "jugador", "La CPU");
+      await atacar(nuevoEstado.jugador.campo, nuevoEstado.cpu.campo, "jugador", "cpu", "El jugador");
     }
 
     const { cpu, logCpu } = turnoCPU(nuevoEstado);
@@ -242,8 +226,7 @@ export default function ArenaBatalla() {
     robarCarta(nuevoEstado.cpu, logTurno, "La CPU");
 
     if (nuevoEstado.jugador.vida <= 0 || nuevoEstado.cpu.vida <= 0) {
-      const ganador =
-        nuevoEstado.jugador.vida > 0
+      const ganador = nuevoEstado.jugador.vida > 0
           ? "¡Ganaste la batalla!"
           : "Perdiste la batalla...";
       logTurno.push(ganador);
@@ -272,32 +255,25 @@ export default function ArenaBatalla() {
     nuevoEstado.log = [...nuevoEstado.log, ...logTurno];
     setEstado(nuevoEstado);
 
-    setBloqueado(false); // desbloquea al terminar
+    setBloqueado(false);
   };
 
   if (!estado) return <p>Cargando batalla...</p>;
 
-  // === Render principal ===
   return (
     <div className="arena-container">
       <div className="arena-overlay" />
       <div className="arena-content">
         <div className="cpu-section">
-          <div
-            className={`perfil-container ${
-              turnoActual === "cpu" ? "turno-activo" : "turno-inactivo"
-            }`}
-          >
+          <div className={`perfil-container ${turnoActual === "cpu" ? "turno-activo" : "turno-inactivo"}`}>
             <img
               src="/cpu.png"
               alt="CPU"
               className={`perfil-imagen ${animaciones["cpu-perfil"] || ""}`}
             />
-
             <div>
               <h3>
-                CPU{" "}
-                {turnoActual === "cpu" && <span className="espada">⚔️</span>}
+                CPU {turnoActual === "cpu" && <span className="espada">⚔️</span>}
               </h3>
               <p>Vida: {estado.cpu.vida}</p>
             </div>
@@ -306,10 +282,7 @@ export default function ArenaBatalla() {
           <div className="campo">
             {estado.cpu.campo.map((carta: any, i: number) =>
               carta ? (
-                <div
-                  key={i}
-                  className={`slot ${animaciones[`cpu-${i}`] || ""}`}
-                >
+                <div key={i} className={`slot ${animaciones[`cpu-${i}`] || ""}`}>
                   <img src={carta.image} alt={carta.name} />
                   <div className="slot-info">
                     <span>ATK {carta.attack}</span>
@@ -324,34 +297,20 @@ export default function ArenaBatalla() {
         </div>
 
         {/* === Jugador === */}
-
-        <div
-          className={`player-section ${
-            turnoActual === "cpu" ? "cpu-turno" : ""
-          }`}
-        >
+        <div className={`player-section ${turnoActual === "cpu" ? "cpu-turno" : ""}`}>
           <div className="campo">
             {estado.jugador.campo.map((carta: any, i: number) => {
               const esNueva = carta?.turnoColocada === estado.ronda;
               const bordeColor = carta
-                ? esNueva
-                  ? "#E6C200"
-                  : "#444"
-                : cartaSeleccionada && turnoActual === "jugador"
-                ? "#00FFFF"
-                : "#888";
+                ? esNueva ? "#E6C200" : "#444"
+                : cartaSeleccionada && turnoActual === "jugador" ? "#00FFFF" : "#888";
 
               return (
                 <div
                   key={i}
-                  onClick={() =>
-                    carta ? retirarCartaDelCampo(i) : colocarCartaEnCampo(i)
-                  }
+                  onClick={() => carta ? retirarCartaDelCampo(i) : colocarCartaEnCampo(i)}
                   className={`slot ${animaciones[`jugador-${i}`] || ""}`}
-                  style={{
-                    border: `2px solid ${bordeColor}`,
-                    position: "relative",
-                  }}
+                  style={{ border: `2px solid ${bordeColor}`, position: "relative" }}
                 >
                   {carta ? (
                     <>
@@ -362,11 +321,8 @@ export default function ArenaBatalla() {
                       </div>
                     </>
                   ) : (
-                    cartaSeleccionada &&
-                    turnoActual === "jugador" && (
-                      <div className="slot-hint">
-                        <span>Colocar aquí</span>
-                      </div>
+                    cartaSeleccionada && turnoActual === "jugador" && (
+                      <div className="slot-hint"><span>Colocar aquí</span></div>
                     )
                   )}
                 </div>
@@ -379,16 +335,8 @@ export default function ArenaBatalla() {
               {estado.jugador.mano.map((carta: any) => (
                 <div
                   key={carta.uid}
-                  onClick={() =>
-                    setCartaSeleccionada(
-                      cartaSeleccionada?.uid === carta.uid ? null : carta
-                    )
-                  }
-                  className={`carta ${
-                    cartaSeleccionada?.uid === carta.uid
-                      ? "carta-seleccionada"
-                      : ""
-                  }`}
+                  onClick={() => setCartaSeleccionada(cartaSeleccionada?.uid === carta.uid ? null : carta)}
+                  className={`carta ${cartaSeleccionada?.uid === carta.uid ? "carta-seleccionada" : ""}`}
                 >
                   <img src={carta.image} alt={carta.name} />
                   <div className="carta-info">
@@ -397,7 +345,6 @@ export default function ArenaBatalla() {
                   </div>
                 </div>
               ))}
-
               <div className="baraja">
                 <img src="/cartabaraja.png" alt="baraja jugador" />
                 <p>{estado.jugador.baraja.length}/10</p>
@@ -406,44 +353,17 @@ export default function ArenaBatalla() {
           </div>
 
           {/* Botones */}
-          <div
-            className={`perfil-container ${
-              turnoActual === "jugador" ? "turno-activo" : "turno-inactivo"
-            }`}
-          >
-            <img
-              src="/player.png"
-              alt="Jugador"
-              className={`perfil-imagen ${animaciones["jugador-perfil"] || ""}`}
-            />
-
+          <div className={`perfil-container ${turnoActual === "jugador" ? "turno-activo" : "turno-inactivo"}`}>
+            <img src="/player.png" alt="Jugador" className={`perfil-imagen ${animaciones["jugador-perfil"] || ""}`} />
             <div>
-              <h3>
-                Tú{" "}
-                {turnoActual === "jugador" && (
-                  <span className="espada">⚔️</span>
-                )}
-              </h3>
+              <h3>Tú {turnoActual === "jugador" && (<span className="espada">⚔️</span>)}</h3>
               <p>Vida: {estado.jugador.vida}</p>
             </div>
             <div>
-              <button
-                onClick={resolverCombate}
-                className="turno-btn"
-                disabled={bloqueado}
-              >
-                {bloqueado
-                  ? "Resolviendo..."
-                  : turnoActual === "jugador"
-                  ? "Atacar"
-                  : "Defender"}
+              <button onClick={resolverCombate} className="turno-btn" disabled={bloqueado}>
+                {bloqueado ? "Resolviendo..." : turnoActual === "jugador" ? "Atacar" : "Defender"}
               </button>
-
-              <button
-                onClick={() => setMostrarRendirse(true)}
-                className="rendirse-btn"
-                disabled={bloqueado}
-              >
+              <button onClick={() => setMostrarRendirse(true)} className="rendirse-btn" disabled={bloqueado}>
                 Rendirse
               </button>
             </div>
@@ -458,21 +378,14 @@ export default function ArenaBatalla() {
                 <button
                   className="btn-volver"
                   onClick={() => {
-                    // Reinicia la partida
+                    // CAMBIO: Recarga ambas barajas desde localStorage para reiniciar
                     const seleccionadas = JSON.parse(
-                      localStorage.getItem("cartasSeleccionadas") || "[]"
+                        localStorage.getItem("cartasSeleccionadas") || 
+                        localStorage.getItem("cartasPlayer") || "[]"
                     );
-                    const cartasBase = JSON.parse(
-                      localStorage.getItem("cartas") || "[]"
-                    );
-                    const cartasJugador = seleccionadas
-                      .map((id: number) =>
-                        cartasBase.find((c: any) => c.id === id)
-                      )
-                      .filter(Boolean)
-                      .map((c: any) => ({ ...c, hp: c.defense }));
-
-                    const estadoInicial = inicializarPartida(cartasJugador);
+                    const cpuSeleccionadas = JSON.parse(localStorage.getItem("cartasCPU") || "[]");
+                    
+                    const estadoInicial = inicializarPartida(seleccionadas, cpuSeleccionadas);
                     setEstado(estadoInicial);
                     setResultadoFinal(null);
                     setTurnoActual("jugador");
@@ -481,11 +394,7 @@ export default function ArenaBatalla() {
                 >
                   Volver a jugar
                 </button>
-
-                <button
-                  className="btn-salir"
-                  onClick={() => navigate("/arena")}
-                >
+                <button className="btn-salir" onClick={() => navigate("/arena")}>
                   Salir
                 </button>
               </div>
@@ -496,33 +405,21 @@ export default function ArenaBatalla() {
           <div className="resultado-overlay">
             <div className="resultado-card">
               <h2>¿Seguro que deseas rendirte?</h2>
-              <p
-                style={{
-                  marginBottom: "1rem",
-                  fontSize: "1rem",
-                  color: "#ccc",
-                }}
-              >
+              <p style={{ marginBottom: "1rem", fontSize: "1rem", color: "#ccc" }}>
                 Perderás automáticamente la partida.
               </p>
               <div className="resultado-botones">
                 <button
                   className="btn-salir"
                   onClick={() => {
-                    setResultadoFinal(
-                      "Te has rendido. La CPU gana la batalla."
-                    );
+                    setResultadoFinal("Te has rendido. La CPU gana la batalla.");
                     setMostrarRendirse(false);
                     setBloqueado(true);
                   }}
                 >
                   Sí, rendirme
                 </button>
-
-                <button
-                  className="btn-volver"
-                  onClick={() => setMostrarRendirse(false)}
-                >
+                <button className="btn-volver" onClick={() => setMostrarRendirse(false)}>
                   Cancelar
                 </button>
               </div>

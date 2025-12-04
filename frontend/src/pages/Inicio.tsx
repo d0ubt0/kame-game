@@ -47,16 +47,25 @@ export function Inicio({selectedCards, setSelectedCards}: {
     fetchData();
   }, []);
 
-  const updateSelectedCards = (id : number) => {
-    const previousSelectedCards = new Set(selectedCards);
+  const updateSelectedCards = (idInput: number | string) => {
+    // 1. Forzamos que el ID sea siempre un número
+    const id = Number(idInput);
+    
+    // 2. Creamos una copia del Set actual
+    const newSelectedCards = new Set(selectedCards);
 
-    if (previousSelectedCards.has(id)) {
-      previousSelectedCards.delete(id);
+    // 3. Verificamos: ¿Ya existe este número en el Set?
+    if (newSelectedCards.has(id)) {
+      console.log(`Quitando ID: ${id}`); // Debug para ver si entra aquí
+      newSelectedCards.delete(id);
     } else {
-      previousSelectedCards.add(id);
+      console.log(`Agregando ID: ${id}`);
+      newSelectedCards.add(id);
     }
-    localStorage.setItem('selectedCards', JSON.stringify(Array.from(previousSelectedCards)));
-    setSelectedCards(previousSelectedCards);
+
+    // 4. Guardamos y actualizamos estado
+    localStorage.setItem('selectedCards', JSON.stringify(Array.from(newSelectedCards)));
+    setSelectedCards(newSelectedCards);
   }
 
   // 3. Renderizado

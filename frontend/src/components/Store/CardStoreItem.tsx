@@ -20,12 +20,19 @@ export function CardStoreItem({
   addStoreItemFunction
 }: ICardStoreItem) {
   const [showToast, setShowToast] = useState(false);
-  const textButton = isSelected ? 'Agregado' : 'Añadir al carrito';
+
+  // CAMBIO 1: Mejoramos el texto para que el usuario sepa que puede quitarla
+  const textButton = isSelected ? 'Quitar del carrito' : 'Añadir al carrito';
   const classButton = isSelected ? 'Selected' : 'NoSelected';
 
   const handleAddToCart = () => {
+    // CAMBIO 2: ¡Quitamos el if (!isSelected)!
+    // Ahora la función se ejecuta SIEMPRE.
+    // Tu lógica en Inicio.tsx se encargará de agregar o quitar según corresponda.
+    addStoreItemFunction(id);
+
+    // Opcional: Solo mostramos el Toast de "Añadido" cuando NO estaba seleccionado
     if (!isSelected) {
-      addStoreItemFunction(id);
       setShowToast(true);
     }
   };

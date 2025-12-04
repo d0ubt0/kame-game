@@ -6,18 +6,29 @@ import "./login.css";
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // Nuevo estado para feedback visual
   const navigate = useNavigate();
   const { login } = useAuth();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setError(""); // Limpiar error al escribir
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const success = login(form.email, form.password);
-    if (success) navigate("/");
-    else setError("Correo o contraseña incorrectos. Regístrate si no tienes cuenta.");
+    setIsLoading(true); // Bloqueamos el botón
+    setError("");
+
+    // Await es clave aquí: esperamos la respuesta del backend
+    const success = await login(form.email, form.password);
+    
+    if (success) {
+      navigate("/");
+    } else {
+      setError("Correo o contraseña incorrectos.");
+      setIsLoading(false); // Reactivamos el botón si falló
+    }
   };
 
   return (
@@ -54,15 +65,16 @@ export default function Login() {
               />
             </div>
 
-            {error && <p className="error-text">{error}</p>}
+            {error && <p className="error-text" style={{color: 'red', fontSize: '0.9rem'}}>{error}</p>}
 
-            <button type="submit" className="login-btn">
-              Entrar al duelo
+            <button type="submit" className="login-btn" disabled={isLoading}>
+              {isLoading ? "Verificando..." : "Entrar al duelo"}
             </button>
           </form>
 
           <p className="login-footer">
             ¿No tienes cuenta?{" "}
+            {/* Asegúrate de tener esta ruta configurada o usa Link */}
             <span onClick={() => navigate("/registro")} className="link">
               Regístrate
             </span>
@@ -71,6 +83,7 @@ export default function Login() {
       </div>
 
       <div className="login-right">
+        {/* Tu contenido visual original se mantiene igual */}
         <div className="overlay"></div>
         <div className="right-content">
           <img src="/logo-p.png" alt="Yu-Gi-Oh!" className="yugioh-logo" />

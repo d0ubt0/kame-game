@@ -23,9 +23,7 @@ import { MisCompras } from "./pages/Carrito/MisCompras";
 import { AbrirPaquete } from "./pages/Carrito/AbrirPaquete";
 
 function App() {
-  useEffect(() => {
-    initLocalData();
-  }, []);
+
 
   const [selectedCards, setSelectedCards] = useState<Set<number>>(() => {
   const stored = localStorage.getItem('selectedCards');
