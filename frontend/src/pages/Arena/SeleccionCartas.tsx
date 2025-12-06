@@ -180,16 +180,51 @@ export default function SeleccionCartas() {
             </div>
           </div>
 
-          {/* Modal */}
-          {mostrarModal && (
-              <div className="modal-overlay" onClick={() => setMostrarModal(false)}>
-                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            {/* Modal con las reglas */}
+            {mostrarModal && (
+              <div
+                className="modal-overlay"
+                onClick={() => setMostrarModal(false)}
+              >
+                <div
+                  className="modal-content"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <h2>⚔️ Cómo Jugar</h2>
-                  <p>Selecciona 10 cartas y presiona Iniciar.</p>
-                  <button className="cerrar-modal" onClick={() => setMostrarModal(false)}>Cerrar</button>
+                  <ul>
+                    <li>
+                      Selecciona 10 cartas de tu colección para formar tu
+                      baraja.
+                    </li>
+                    <li>
+                      Al iniciar, tendrás 5 cartas en tu mano y robarás una cada
+                      ronda.
+                    </li>
+                    <li>
+                      Cuando sea tu turno podrás colocar cartas en los espacios
+                      que tengas vacios en el tablero.
+                    </li>
+                    <li>
+                      Cuando sea turno de tu rival solamente podrás defender
+                    </li>
+                    <li>
+                      Las cartas atacan a las que estén frente a ellas o
+                      directamente al rival.
+                    </li>
+                    <li>Si la vida de una carta llega a 0, es destruida.</li>
+                    <li>
+                      El jugador o CPU que llegue a 0 puntos de vida pierde.
+                    </li>
+                  </ul>
+                  <button
+                    className="cerrar-modal"
+                    onClick={() => setMostrarModal(false)}
+                  >
+                    Cerrar
+                  </button>
                 </div>
               </div>
-          )}
+            )}
 
           {cartasJugador.length === 0 ? (
              <p style={{ color: "#aaa", textAlign:'center' }}>No tienes cartas.</p>
