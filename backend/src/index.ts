@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import { prisma } from "./prisma";
 import { TokenService } from "./tokenService";
 import { authMiddleware, AuthRequest } from "./authMiddleware";
+import { PasswordService } from "./passwordService";
 
 const app = express();
 const PORT = 3001;
@@ -47,9 +48,12 @@ app.post("/api/login", async (req, res) => {
   try {
     const user = await prisma.user.findUnique({ where: { email } });
 
-    if (user && user.password === password) {
+    if (
+      user &&
+      (await PasswordService.isSamePassword(password, user.password))
+    ) {
       const { password, ...userWithoutPassword } = user;
-      const token = TokenService.generateAccessToken(user);
+      const token = TokenService.generateAccessToken(userWithoutPassword);
       res.json({ ...userWithoutPassword, token });
     } else {
       res.status(401).json({ error: "Credenciales incorrectas" });
@@ -63,11 +67,13 @@ app.post("/api/register", async (req, res) => {
   const { email, password } = req.body;
   const username = email.split("@")[0];
 
+  const hashedPassword = await PasswordService.hashPassword(password);
+
   try {
     const newUser = await prisma.user.create({
       data: {
         email,
-        password,
+        password: hashedPassword,
         username,
         role: "cliente",
         collection: { create: [] },
@@ -149,12 +155,14 @@ app.get("/api/users", authMiddleware, async (req: AuthRequest, res) => {
 
 app.post("/api/users", authMiddleware, async (req: AuthRequest, res) => {
   const { username, email, password, role } = req.body;
+
+  const hashedPassword = await PasswordService.hashPassword(password);
   try {
     const newUser = await prisma.user.create({
       data: {
         username,
         email,
-        password,
+        password: hashedPassword,
         role: role || "cliente",
         collection: { create: [] },
       },
@@ -170,11 +178,12 @@ app.post("/api/users", authMiddleware, async (req: AuthRequest, res) => {
 app.put("/api/users/:id", authMiddleware, async (req: AuthRequest, res) => {
   const { id } = req.params;
   const { username, email, password, role } = req.body;
+  const hashedPassword = await PasswordService.hashPassword(password);
 
   try {
     const updatedUser = await prisma.user.update({
       where: { id: Number(id) },
-      data: { username, email, password, role },
+      data: { username, email, password: hashedPassword, role },
     });
     res.json(updatedUser);
   } catch (error) {
