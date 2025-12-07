@@ -26,12 +26,12 @@ export function Inicio({selectedCards, setSelectedCards}: {
     const fetchData = async () => {
       try {
         // Petición de Cartas
-        const cardsResponse = await fetch('http://localhost:3001/api/cards');
+        const cardsResponse = await fetch('http://localhost:3001/api/cards', {headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() }, credentials: "include"});
         const cardsData = await cardsResponse.json();
         setCardsStore(cardsData);
 
         // Petición de Paquetes (Si no tienes este endpoint aún, puedes comentar esto)
-        const packsResponse = await fetch('http://localhost:3001/api/packs');
+        const packsResponse = await fetch('http://localhost:3001/api/packs', { headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() },credentials: "include"});
         if (packsResponse.ok) {
            const packsData = await packsResponse.json();
            setPacksStore(packsData);

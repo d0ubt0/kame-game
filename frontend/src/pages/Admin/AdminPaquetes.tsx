@@ -21,8 +21,8 @@ function ManagePaquetes() {
     try {
       // Hacemos las dos peticiones en paralelo
       const [packsRes, cardsRes] = await Promise.all([
-        fetch(API_PACKS),
-        fetch(API_CARDS)
+        fetch(API_PACKS, { headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() },credentials: "include"}),
+        fetch(API_CARDS, { headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() },credentials: "include"})
       ]);
 
       if (packsRes.ok && cardsRes.ok) {
@@ -60,8 +60,9 @@ function ManagePaquetes() {
         // --- EDITAR (PUT) ---
         const response = await fetch(`${API_PACKS}/${paqueteToEdit.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json',"Authorization": "Bearer " + localStorage.getItem("token")?.toString()}, 
           body: JSON.stringify(payload),
+          credentials: "include"
         });
 
         if (response.ok) {
@@ -72,8 +73,9 @@ function ManagePaquetes() {
         // --- CREAR (POST) ---
         const response = await fetch(API_PACKS, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' , "Authorization": "Bearer " + localStorage.getItem("token")?.toString() },
           body: JSON.stringify(payload),
+          credentials: "include"
         });
 
         if (response.ok) {
@@ -97,6 +99,8 @@ function ManagePaquetes() {
       try {
         const response = await fetch(`${API_PACKS}/${paqueteId}`, {
           method: 'DELETE',
+          headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() },
+          credentials: "include"
         });
 
         if (response.ok) {

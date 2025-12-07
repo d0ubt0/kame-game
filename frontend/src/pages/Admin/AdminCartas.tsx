@@ -17,7 +17,12 @@ function ManageSingles() {
   const fetchCards = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(API_URL, {
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem("token")?.toString()
+        },
+        credentials: "include"
+      });
       const data = await response.json();
       setSingles(data);
     } catch (error) {
@@ -36,10 +41,12 @@ function ManageSingles() {
     try {
       if (singleToEdit) {
         // --- MODO EDICIÓN (PUT) ---
+        
         const response = await fetch(`${API_URL}/${singleToEdit.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', "Authorization": "Bearer " + localStorage.getItem("token")?.toString() },
           body: JSON.stringify(formData),
+          credentials: "include"
         });
         
         if (response.ok) {
@@ -50,8 +57,9 @@ function ManageSingles() {
         // --- MODO CREACIÓN (POST) ---
         const response = await fetch(API_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', "Authorization": "Bearer " + localStorage.getItem("token")?.toString() },
           body: JSON.stringify(formData),
+          credentials: "include"
         });
 
         if (response.ok) {
@@ -74,6 +82,8 @@ function ManageSingles() {
       try {
         const response = await fetch(`${API_URL}/${singleId}`, {
           method: 'DELETE',
+          headers: { "Authorization": "Bearer " + localStorage.getItem("token")?.toString() },
+          credentials: "include"
         });
 
         if (response.ok) {

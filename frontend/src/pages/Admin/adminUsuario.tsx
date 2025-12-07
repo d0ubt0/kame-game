@@ -17,7 +17,7 @@ function ManageUsers() {
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(API_URL, {headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() }, credentials: "include"});
       if (response.ok) {
         const data = await response.json();
         setUsuarios(data);
@@ -42,8 +42,9 @@ function ManageUsers() {
         // --- EDITAR (PUT) ---
         const response = await fetch(`${API_URL}/${usuarioEditar.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', "Authorization": "Bearer " + localStorage.getItem("token")?.toString()  },
           body: JSON.stringify(formData),
+          credentials: "include"
         });
 
         if (response.ok) {
@@ -57,8 +58,9 @@ function ManageUsers() {
         // --- CREAR (POST) ---
         const response = await fetch(API_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', "Authorization": "Bearer " + localStorage.getItem("token")?.toString()  },
           body: JSON.stringify(formData),
+          credentials: "include"
         });
 
         if (response.ok) {
@@ -83,6 +85,8 @@ function ManageUsers() {
       try {
         const response = await fetch(`${API_URL}/${userId}`, {
           method: 'DELETE',
+          headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() },
+          credentials: "include"
         });
 
         if (response.ok) {

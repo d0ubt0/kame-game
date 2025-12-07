@@ -40,13 +40,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const response = await fetch('http://localhost:3001/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }), 
+        credentials: "include"
       });
+
 
       if (response.ok) {
         const userData = await response.json();
+        console.log(userData);
         setUser(userData);
         setIsAuthenticated(true);
+        const { token } = userData;
+        localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(userData)); // Guardamos sesión
         return true;
       } else {

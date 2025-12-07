@@ -30,8 +30,8 @@ export function Carrito({selectedCards, setSelectedCards}:
     const fetchProducts = async () => {
       try {
         const [cardsRes, packsRes] = await Promise.all([
-          fetch('http://localhost:3001/api/cards'),
-          fetch('http://localhost:3001/api/packs') // Este endpoint ya trae las cartas dentro
+          fetch('http://localhost:3001/api/cards', { headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() },credentials: "include"}),
+          fetch('http://localhost:3001/api/packs', { headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() },credentials: "include"}) // Este endpoint ya trae las cartas dentro
         ]);
 
         const cardsData = await cardsRes.json();
@@ -113,7 +113,8 @@ export function Carrito({selectedCards, setSelectedCards}:
     try {
       const response = await fetch('http://localhost:3001/api/purchase', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        credentials: "include",
+        headers: { 'Content-Type': 'application/json' ,"Authorization": "Bearer " + localStorage.getItem("token")?.toString() },
         body: JSON.stringify({
           userId: user.id,
           items: cart 

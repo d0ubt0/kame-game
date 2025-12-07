@@ -28,7 +28,7 @@ export function Coleccion() {
     const fetchCollection = async () => {
       try {
         // Llamamos al nuevo endpoint del backend
-        const response = await fetch(`http://localhost:3001/api/users/${user.id}/collection`);
+        const response = await fetch(`http://localhost:3001/api/users/collection`,{headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() },credentials: 'include'});
         
         if (response.ok) {
           const data = await response.json();

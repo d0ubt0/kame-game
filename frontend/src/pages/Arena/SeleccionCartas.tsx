@@ -36,7 +36,7 @@ export default function SeleccionCartas() {
     const fetchData = async () => {
       try {
         // 1. Cargar colección del usuario
-        const resColeccion = await fetch(`http://localhost:3001/api/users/${user.id}/collection`);
+        const resColeccion = await fetch(`http://localhost:3001/api/users/collection`, { headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() },credentials: "include"});
         if (resColeccion.ok) {
           const data = await resColeccion.json();
           const cartasFormateadas = data.map((item: any) => ({
@@ -48,7 +48,7 @@ export default function SeleccionCartas() {
 
         // 2. Cargar TODAS las cartas de la base de datos (para la CPU)
         // Asumiendo que existe este endpoint. Si no, ajusta la URL.
-        const resTodas = await fetch(`http://localhost:3001/api/cards`);
+        const resTodas = await fetch(`http://localhost:3001/api/cards`, {headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() }, credentials: "include"});
         if (resTodas.ok) {
           const dataTodas = await resTodas.json();
           // Aseguramos que tengan la estructura correcta
