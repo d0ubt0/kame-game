@@ -1,8 +1,10 @@
 .CollectionContainer{
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   background-color: #1a1a1a;
+  min-height: 70vh;
 }
 
 .CollectionContainer h1 {

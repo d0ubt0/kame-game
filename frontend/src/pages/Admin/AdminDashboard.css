@@ -60,3 +60,7 @@
   transform: scale(1.05);
   box-shadow: 0 0 20px rgba(255, 234, 74, 0.8);
 }
+
+.admin-paquete, .admin-cartas, .admin-usuario{
+  min-height: 70vh;
+}

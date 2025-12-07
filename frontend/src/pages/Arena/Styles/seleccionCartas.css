@@ -1,3 +1,6 @@
+.conteiner{
+  min-height: 70vh;
+}
 .conteiner-cartas{
   padding: 2rem;
   min-height:60vh;

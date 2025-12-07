@@ -1,5 +1,6 @@
 .carrito{
   padding: 5% 5%;
+  min-height: 70vh;
 }
 
 .panel-carrito{

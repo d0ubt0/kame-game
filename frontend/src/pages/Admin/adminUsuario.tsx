@@ -113,7 +113,7 @@ function ManageUsers() {
   };
 
   return (
-    <div>
+    <div className="admin-usuario">
       <PageTitle title="Gestión de Usuarios (Base de Datos)" />
       
       <div style={{ padding: "2rem", height: "100%" }}>
