@@ -4,6 +4,9 @@ import { inicializarPartida } from "./logic/batallaUtils";
 import { useAnimacionCombate } from "./logic/useAnimacionCombate";
 import "./Styles/arena.css";
 
+// Clave para localStorage
+const LOCAL_STORAGE_KEY = "estadoPartidaGuardada";
+
 export default function ArenaBatalla() {
   const navigate = useNavigate();
   const [estado, setEstado] = useState<any | null>(null);
@@ -14,17 +17,67 @@ export default function ArenaBatalla() {
   const [resultadoFinal, setResultadoFinal] = useState<string | null>(null);
   const [mostrarRendirse, setMostrarRendirse] = useState(false);
 
-  // === Inicialización ===
+  // === Función para guardar el estado en localStorage ===
+  const guardarEstado = (estadoActual: any, turno: string, cartaSel: any) => {
+    const datosAGuardar = {
+      estado: estadoActual,
+      turnoActual: turno,
+      cartaSeleccionada: cartaSel,
+      timestamp: new Date().toISOString()
+    };
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(datosAGuardar));
+  };
+
+  // === Función para cargar el estado guardado ===
+  const cargarEstadoGuardado = () => {
+    const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (!saved) return null;
+    
+    try {
+      const datos = JSON.parse(saved);
+      // Verificar que los datos no sean demasiado viejos (ej. más de 1 hora)
+      const fechaGuardado = new Date(datos.timestamp);
+      const ahora = new Date();
+      const horasDiferencia = (ahora.getTime() - fechaGuardado.getTime()) / (1000 * 60 * 60);
+      
+      if (horasDiferencia > 1) {
+        console.log("Partida guardada muy antigua, descartando...");
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+        return null;
+      }
+      
+      return datos;
+    } catch (error) {
+      console.error("Error cargando partida guardada:", error);
+      return null;
+    }
+  };
+
+  // === Inicialización con carga de partida guardada ===
   useEffect(() => {
-    // 1. Cargar cartas del Jugador
-    // NOTA: Asegúrate de que la key sea la misma que usaste en SeleccionCartas 
-    // (en el paso anterior usamos "cartasSeleccionadas", aquí tenías "cartasPlayer")
+    // Primero intentar cargar partida guardada
+    const partidaGuardada = cargarEstadoGuardado();
+    
+    if (partidaGuardada) {
+      if (window.confirm("¿Quieres continuar la partida anterior?")) {
+        // Cargar partida guardada
+        setEstado(partidaGuardada.estado);
+        setTurnoActual(partidaGuardada.turnoActual);
+        setCartaSeleccionada(partidaGuardada.cartaSeleccionada);
+        console.log("Partida cargada desde guardado");
+        return;
+      } else {
+        // Usuario quiere empezar nueva partida, eliminar guardado
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+      }
+    }
+    
+    // Si no hay partida guardada o usuario quiere nueva, cargar desde cartas
     const seleccionadas = JSON.parse(
       localStorage.getItem("cartasSeleccionadas") || 
       localStorage.getItem("cartasPlayer") || "[]"
     );
 
-    // 2. Cargar cartas de la CPU
     const cpuSeleccionadas = JSON.parse(
       localStorage.getItem("cartasCPU") || "[]"
     );
@@ -44,6 +97,13 @@ export default function ArenaBatalla() {
     const estadoInicial = inicializarPartida(seleccionadas, cpuSeleccionadas);
     setEstado(estadoInicial);
   }, []);
+
+  // === Guardar automáticamente cuando cambia el estado, turno o carta seleccionada ===
+  useEffect(() => {
+    if (estado && !resultadoFinal) { // Solo guardar si hay estado y no hay resultado final
+      guardarEstado(estado, turnoActual, cartaSeleccionada);
+    }
+  }, [estado, turnoActual, cartaSeleccionada, resultadoFinal]);
 
   // === Colocar carta ===
   const colocarCartaEnCampo = (slotIndex: number) => {
@@ -67,14 +127,16 @@ export default function ArenaBatalla() {
       turnoColocada: estado.ronda,
     };
 
-    setEstado({
+    const nuevoEstado = {
       ...estado,
       jugador: { ...estado.jugador, mano: nuevaMano, campo: nuevoCampo },
       log: [
         ...estado.log,
         `Colocaste ${cartaSeleccionada.name} en el slot ${slotIndex + 1}.`,
       ],
-    });
+    };
+    
+    setEstado(nuevoEstado);
     setCartaSeleccionada(null);
   };
 
@@ -94,15 +156,16 @@ export default function ArenaBatalla() {
     const nuevoCampo = [...estado.jugador.campo];
     nuevoCampo[slotIndex] = null;
 
-    setEstado({
+    const nuevoEstado = {
       ...estado,
       jugador: { ...estado.jugador, mano: nuevaMano, campo: nuevoCampo },
       log: [
         ...estado.log,
         `Retiraste ${carta.name} del slot ${slotIndex + 1}.`,
       ],
-    });
-
+    };
+    
+    setEstado(nuevoEstado);
     if (cartaSeleccionada?.uid === carta.uid) setCartaSeleccionada(null);
   };
 
@@ -231,6 +294,9 @@ export default function ArenaBatalla() {
           : "Perdiste la batalla...";
       logTurno.push(ganador);
       setResultadoFinal(ganador);
+      
+      // Eliminar partida guardada cuando termina
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
 
       setEstado({ ...nuevoEstado, log: [...nuevoEstado.log, ...logTurno] });
       setBloqueado(false);
@@ -246,6 +312,9 @@ export default function ArenaBatalla() {
           : "¡Empate! Ambos sin cartas.";
       logTurno.push(resultado);
       setResultadoFinal(resultado);
+      
+      // Eliminar partida guardada cuando termina
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
     }
 
     const siguienteTurno = turnoActual === "jugador" ? "cpu" : "jugador";
@@ -258,12 +327,41 @@ export default function ArenaBatalla() {
     setBloqueado(false);
   };
 
+  // Botón para borrar partida guardada manualmente
+  const limpiarPartidaGuardada = () => {
+    if (window.confirm("¿Estás seguro de que quieres eliminar la partida guardada?")) {
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
+      alert("Partida guardada eliminada. La próxima vez empezarás de nuevo.");
+    }
+  };
+
   if (!estado) return <p>Cargando batalla...</p>;
 
   return (
     <div className="arena-container">
       <div className="arena-overlay" />
       <div className="arena-content">
+        {/* Botón para eliminar partida guardada */}
+        <button 
+          onClick={limpiarPartidaGuardada}
+          style={{
+            position: "absolute",
+            top: "10px",
+            right: "10px",
+            background: "rgba(255, 50, 50, 0.8)",
+            color: "white",
+            border: "none",
+            padding: "5px 10px",
+            borderRadius: "5px",
+            cursor: "pointer",
+            fontSize: "12px",
+            zIndex: 1000
+          }}
+          title="Eliminar partida guardada"
+        >
+          🗑️
+        </button>
+
         <div className="cpu-section">
           <div className={`perfil-container ${turnoActual === "cpu" ? "turno-activo" : "turno-inactivo"}`}>
             <img
@@ -378,7 +476,9 @@ export default function ArenaBatalla() {
                 <button
                   className="btn-volver"
                   onClick={() => {
-                    // CAMBIO: Recarga ambas barajas desde localStorage para reiniciar
+                    // Nueva partida - eliminar guardado anterior
+                    localStorage.removeItem(LOCAL_STORAGE_KEY);
+                    
                     const seleccionadas = JSON.parse(
                         localStorage.getItem("cartasSeleccionadas") || 
                         localStorage.getItem("cartasPlayer") || "[]"
@@ -389,12 +489,17 @@ export default function ArenaBatalla() {
                     setEstado(estadoInicial);
                     setResultadoFinal(null);
                     setTurnoActual("jugador");
+                    setCartaSeleccionada(null);
                     setBloqueado(false);
                   }}
                 >
                   Volver a jugar
                 </button>
-                <button className="btn-salir" onClick={() => navigate("/arena")}>
+                <button className="btn-salir" onClick={() => {
+                  // Eliminar guardado al salir
+                  localStorage.removeItem(LOCAL_STORAGE_KEY);
+                  navigate("/arena");
+                }}>
                   Salir
                 </button>
               </div>
@@ -415,6 +520,8 @@ export default function ArenaBatalla() {
                     setResultadoFinal("Te has rendido. La CPU gana la batalla.");
                     setMostrarRendirse(false);
                     setBloqueado(true);
+                    // Eliminar guardado al rendirse
+                    localStorage.removeItem(LOCAL_STORAGE_KEY);
                   }}
                 >
                   Sí, rendirme
