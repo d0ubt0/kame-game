@@ -14,7 +14,7 @@ interface Product {
   image: string;
   quantity: number;
   type: 'card' | 'pack';
-  cards?: any[]; // <--- ¡ESTO FALTABA!
+  cards?: any[];
 }
 
 export function Carrito({selectedCards, setSelectedCards}:
@@ -26,8 +26,46 @@ export function Carrito({selectedCards, setSelectedCards}:
   const [cart, setCart] = useState<Product[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
 
+  // -----------------------
+  // ⭐ Helper: leer localStorage de forma segura
+  const readSavedCart = (): Product[] => {
+    try {
+      const raw = localStorage.getItem("cart");
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return [];
+      // Normalizar: asegurar que cada saved tenga id numérico y quantity numérico
+      return parsed.map((s: any) => ({
+        id: Number(s.id),
+        name: s.name || '',
+        price: Number(s.price) || 0,
+        image: s.image || '',
+        quantity: Number(s.quantity) || 1,
+        type: s.type || 'card',
+        cards: s.cards || []
+      }));
+    } catch (e) {
+      console.error("Error leyendo cart de localStorage:", e);
+      return [];
+    }
+  };
+
+  // -----------------------
+  // ⭐ Al montar, intentamos restaurar carrito desde localStorage inmediatamente
+  useEffect(() => {
+    const saved = readSavedCart();
+    if (saved.length > 0) {
+      setCart(saved);
+    }
+    // No seteamos isLoading aquí; fetchProducts lo hará
+  }, []);
+
+
+  // -----------------------
+  // ⭐ Fetch y merge: traemos datos de la API y los fusionamos con savedCart (prioridad savedCart.quantity)
   useEffect(() => {
     const fetchProducts = async () => {
+      setIsLoadingProducts(true);
       try {
         const [cardsRes, packsRes] = await Promise.all([
           fetch('http://localhost:3001/api/cards', { headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() },credentials: "include"}),
@@ -43,22 +81,62 @@ export function Carrito({selectedCards, setSelectedCards}:
           ...packsData.map((p: any) => ({ ...p, type: 'pack' }))
         ];
 
-        // Filtramos los seleccionados
-        const selectedProducts = allProducts
-          .filter((p: any) => selectedCards.has(p.id))
-          .map((p: any) => ({
-            id: p.id,
-            name: p.name,
-            price: p.price,
-            image: p.image,
-            type: p.type,
-            quantity: 1,
-            // --- CORRECCIÓN CRÍTICA AQUÍ ---
-            // Si el producto tiene la propiedad 'cards' (es un paquete), ¡la guardamos!
-            cards: p.cards || [] 
-          }));
+        // Leer savedCart (nuevamente) para fusionar
+        const savedCart = readSavedCart();
 
-        setCart(selectedProducts);
+        // 1) Si hay savedCart (persistido), reconstruimos el carrito según savedCart,
+        //    pero completamos nombre/price/image/type/cards desde allProducts.
+        // 2) Si no hay savedCart, usamos selectedCards como fuente y quantity = 1 (o lo que haya en savedCart).
+        let finalCart: Product[] = [];
+
+        if (savedCart.length > 0) {
+          finalCart = savedCart.map((s) => {
+            const prod = allProducts.find((ap: any) => Number(ap.id) === Number(s.id));
+            return {
+              id: Number(s.id),
+              name: prod ? (prod.name ?? s.name) : s.name,
+              price: prod ? (Number(prod.price) || s.price) : s.price,
+              image: prod ? (prod.image ?? s.image) : s.image,
+              type: prod ? (prod.type ?? s.type) : (s.type || 'card'),
+              quantity: Number(s.quantity) || 1,
+              cards: prod ? (prod.cards || s.cards || []) : (s.cards || [])
+            } as Product;
+          });
+
+          // Adicional: si hay productos seleccionados (selectedCards) que no estaban en savedCart,
+          // los agregamos con quantity = 1
+          allProducts.forEach((ap: any) => {
+            const idNum = Number(ap.id);
+            if (selectedCards.has(idNum) && !finalCart.find(f => f.id === idNum)) {
+              finalCart.push({
+                id: idNum,
+                name: ap.name,
+                price: Number(ap.price) || 0,
+                image: ap.image,
+                type: ap.type,
+                quantity: 1,
+                cards: ap.cards || []
+              });
+            }
+          });
+
+        } else {
+          // No hay savedCart -> construir desde selectedCards
+          finalCart = allProducts
+            .filter((p: any) => selectedCards.has(Number(p.id)))
+            .map((p: any) => ({
+              id: Number(p.id),
+              name: p.name,
+              price: Number(p.price) || 0,
+              image: p.image,
+              type: p.type,
+              quantity: 1,
+              cards: p.cards || []
+            }));
+        }
+
+        setCart(finalCart);
+
       } catch (error) {
         console.error("Error cargando productos:", error);
       } finally {
@@ -66,15 +144,22 @@ export function Carrito({selectedCards, setSelectedCards}:
       }
     };
 
-    if (selectedCards.size > 0) {
-      fetchProducts();
-    } else {
-      setCart([]);
-      setIsLoadingProducts(false);
-    }
-  }, [selectedCards]);
+    fetchProducts();
+  }, [selectedCards]); // cuando cambien las selecciones, actualizamos (pero respetando saved quantities)
 
-  // --- Lógica del Carrito (Sin cambios) ---
+
+  // -----------------------
+  // ⭐ Guardar carrito en localStorage cada vez que cambie
+  useEffect(() => {
+    try {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    } catch (e) {
+      console.error("Error guardando cart en localStorage:", e);
+    }
+  }, [cart]);
+
+  // -----------------------
+  // --- Lógica del Carrito (Sin cambios internos) ---
   const handleIncrease = (id: number) => {
     setCart((prev) =>
       prev.map((p) => (p.id === id ? { ...p, quantity: p.quantity + 1 } : p))
@@ -92,10 +177,15 @@ export function Carrito({selectedCards, setSelectedCards}:
   const handleRemove = (id: number) => {
     const newCart = cart.filter((p) => p.id !== id);
     setCart(newCart);
+
     const newSelected = new Set(selectedCards);
     newSelected.delete(id);
     setSelectedCards(newSelected);
+
+    // Actualizar selectedCards persistido (si usas localStorage para selectedCards)
     localStorage.setItem('selectedCards', JSON.stringify(Array.from(newSelected)));
+    // Guardar carrito actualizado
+    localStorage.setItem('cart', JSON.stringify(newCart));
   };
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -123,7 +213,6 @@ export function Carrito({selectedCards, setSelectedCards}:
 
       if (!response.ok) throw new Error("Error en el pago");
 
-      // Guardamos la compra en local con TODOS los datos (incluyendo las cartas dentro de los paquetes)
       localStorage.setItem(
         "lastPurchase",
         JSON.stringify({ packs: purchasedPacks, singles: purchasedSingles })
@@ -132,6 +221,7 @@ export function Carrito({selectedCards, setSelectedCards}:
       setCart([]);
       setSelectedCards(new Set());
       localStorage.removeItem("selectedCards");
+      localStorage.removeItem("cart"); // limpiar carrito tras pagar
 
       navigate("/Carrito/PagoAnimacion", { 
         state: { packs: purchasedPacks, singles: purchasedSingles } 
@@ -179,9 +269,11 @@ export function Carrito({selectedCards, setSelectedCards}:
           </>)}
         </div>
         
-        {cart.length > 0 && (
-           <PaymentForm onPay={handlePay}/>
+        <div className="panel-formulario">
+          {cart.length > 0 && (
+          <PaymentForm onPay={handlePay}/>
         )}
+        </div>
       </div>
     </div>
   )

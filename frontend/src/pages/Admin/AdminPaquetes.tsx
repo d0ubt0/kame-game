@@ -134,7 +134,7 @@ function ManagePaquetes() {
   };
 
   return (
-    <div>
+    <div className='admin-paquete'>
       <PageTitle title="Gestión de Paquetes (Base de Datos)" />
       
       <div style={{ padding: '2rem', height: '100%' }}>

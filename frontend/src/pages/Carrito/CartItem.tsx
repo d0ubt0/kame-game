@@ -22,7 +22,8 @@ export const CartItem: React.FC<CartItemProps> = ({ id, name, price, image, quan
             <p className='cart-item-price'>{price.toLocaleString()} COP</p>
         </div>
       </div>
-      <div className="cart-item-quantity">
+      <div className="cart-item-compra">
+        <div className="cart-item-quantity">
         <button onClick={() => onDecrease(id)} className="quantity-btn">−</button>
         <span className="quantity">{quantity}</span>
         <button onClick={() => onIncrease(id)} className="quantity-btn">+</button>
@@ -31,6 +32,7 @@ export const CartItem: React.FC<CartItemProps> = ({ id, name, price, image, quan
         <button className="cart-item-remove" onClick={() => onRemove(id)}>
           <img src="../public/eliminar.png" alt="eliminar" className='eliminar-cart-item'/>
         </button>
+      </div>
       </div>
     </div>
   );

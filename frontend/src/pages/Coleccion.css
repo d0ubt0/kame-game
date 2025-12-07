@@ -1,8 +1,10 @@
-.CollectionContainer{
+.CollectionContainer {
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   background-color: #1a1a1a;
+  min-height: 70vh;
 }
 
 .CollectionContainer h1 {
@@ -25,49 +27,14 @@
   gap: 2rem;
 }
 
-.ShopButton{
+.ShopButton {
   margin-top: 2rem;
   color: black;
   background-color: #E6C200;
   border-radius: 8px;
   font-size: 1.5rem;
-  font-style: normal ;
   font-weight: bolder;
   padding: 8px;
   margin-bottom: 2rem;
   transition: all 0.2s ease-in-out;
-}
-
-.SortContainer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  background-color: #2a2a2a;
-  padding: 0.75rem 1.5rem;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(230, 194, 0, 0.3);
-}
-
-.SortContainer label {
-  color: #E6C200;
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
-.SortContainer select {
-  background-color: #E6C200;
-  color: #1a1a1a;
-  border: 2px solid #E6C200;
-  border-radius: 8px;
-  padding: 0.4rem 1rem;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-
-.SortContainer option {
-  background-color: #1a1a1a;
-  color: #E6C200;
 }

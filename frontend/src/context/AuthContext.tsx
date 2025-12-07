@@ -13,6 +13,7 @@ export interface Usuario {
 interface AuthContextType {
   isAuthenticated: boolean;
   user: Usuario | null;
+  loading: boolean; // <--- NUEVO: estado de carga
   // Cambiamos las funciones para que sean asíncronas (Promesas)
   login: (email: string, password: string) => Promise<boolean>;
   register: (email: string, password: string) => Promise<boolean>;
@@ -24,14 +25,22 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<Usuario | null>(null);
+  const [loading, setLoading] = useState(true); // <--- NUEVO: inicialmente en true
 
   // 1. Al cargar la página, revisamos si ya había sesión iniciada
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
-      setIsAuthenticated(true);
+      try {
+        const userData = JSON.parse(savedUser);
+        setUser(userData);
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error("Error parseando usuario guardado:", error);
+        localStorage.removeItem("user");
+      }
     }
+    setLoading(false); // <--- Cambiar a false cuando termine de cargar
   }, []);
 
   // 2. Función LOGIN (Conectada al Backend)
@@ -95,7 +104,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, register }}>
+    <AuthContext.Provider value={{ 
+      isAuthenticated, 
+      user, 
+      loading, // <--- Añadir loading al contexto
+      login, 
+      logout, 
+      register 
+    }}>
       {children}
     </AuthContext.Provider>
   );

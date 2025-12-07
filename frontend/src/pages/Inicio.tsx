@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import { CardStoreItem } from '../components/Store/CardStoreItem';
 import { PageTitle } from '../components/PageTitle';
-import { useState, useEffect } from 'react'; // Agregamos useEffect
+import { useState, useEffect, useRef } from 'react'; // Agrega useRef
+import { Filtro } from "../components/Filtro";
+import type { CartaConCantidad } from "../types/Carta";
 import './Inicio.css';
 
 // Definimos la forma de los datos que vienen de la API
@@ -10,18 +12,67 @@ export interface StoreCardType {
   name: string;
   price: number;
   image: string;
+  attack?: number;
+  defense?: number;
+  cantidad?: number;
 }
 
 export function Inicio({selectedCards, setSelectedCards}: {
   selectedCards: Set<number>;
   setSelectedCards: (cards: Set<number>) => void;
 }) {
-  // 1. Iniciamos los estados vacíos (se llenarán cuando el backend responda)
   const [cardsStore, setCardsStore] = useState<StoreCardType[]>([]);
   const [packsStore, setPacksStore] = useState<StoreCardType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [cartasFiltradas, setCartasFiltradas] = useState<StoreCardType[]>([]);
+  
+  // Estados para controlar filtros
+  const [busquedaTexto, setBusquedaTexto] = useState("");
+  const [ordenSeleccionado, setOrdenSeleccionado] = useState("");
+  
+  // Ref para guardar la versión anterior de cartasFiltradas
+  const cartasFiltradasRef = useRef<StoreCardType[]>([]);
 
-  // 2. Usamos useEffect para llamar a la API al cargar la página
+  const handleFiltrado = (filtradas: CartaConCantidad[]) => {
+    // Guardamos las cartas filtradas
+    const nuevasFiltradas = filtradas as StoreCardType[];
+    
+    // Si el array filtrado es diferente al anterior, actualizamos
+    if (JSON.stringify(nuevasFiltradas) !== JSON.stringify(cartasFiltradasRef.current)) {
+      setCartasFiltradas(nuevasFiltradas);
+      cartasFiltradasRef.current = nuevasFiltradas;
+    }
+  };
+
+  // Función para extraer filtros del DOM (sin modificar Filtro.tsx)
+  const actualizarFiltrosDesdeDOM = () => {
+    // Buscar el input de búsqueda en el DOM
+    const inputBusqueda = document.querySelector('input[type="text"][placeholder*="Buscar"]') as HTMLInputElement;
+    const selectOrden = document.querySelector('select#sort') as HTMLSelectElement;
+    
+    if (inputBusqueda) {
+      setBusquedaTexto(inputBusqueda.value);
+    }
+    if (selectOrden) {
+      setOrdenSeleccionado(selectOrden.value);
+    }
+  };
+
+  // Usar un effect para verificar filtros periódicamente
+  useEffect(() => {
+    const interval = setInterval(() => {
+      actualizarFiltrosDesdeDOM();
+    }, 300); // Verificar cada 300ms
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  // Determinar si hay filtros activos
+  const hayFiltroActivo = busquedaTexto.trim() !== "" || ordenSeleccionado !== "";
+  
+  // Determinar qué cartas mostrar
+  const cartasAMostrar = hayFiltroActivo ? cartasFiltradas : cardsStore;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -29,6 +80,9 @@ export function Inicio({selectedCards, setSelectedCards}: {
         const cardsResponse = await fetch('http://localhost:3001/api/cards', {headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() }, credentials: "include"});
         const cardsData = await cardsResponse.json();
         setCardsStore(cardsData);
+        // Inicializar cartasFiltradas con todas las cartas
+        setCartasFiltradas(cardsData);
+        cartasFiltradasRef.current = cardsData;
 
         // Petición de Paquetes (Si no tienes este endpoint aún, puedes comentar esto)
         const packsResponse = await fetch('http://localhost:3001/api/packs', { headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() },credentials: "include"});
@@ -40,7 +94,7 @@ export function Inicio({selectedCards, setSelectedCards}: {
       } catch (error) {
         console.error("Error conectando con el backend:", error);
       } finally {
-        setIsLoading(false); // Quitamos el estado de carga
+        setIsLoading(false);
       }
     };
 
@@ -48,27 +102,19 @@ export function Inicio({selectedCards, setSelectedCards}: {
   }, []);
 
   const updateSelectedCards = (idInput: number | string) => {
-    // 1. Forzamos que el ID sea siempre un número
     const id = Number(idInput);
-    
-    // 2. Creamos una copia del Set actual
     const newSelectedCards = new Set(selectedCards);
 
-    // 3. Verificamos: ¿Ya existe este número en el Set?
     if (newSelectedCards.has(id)) {
-      console.log(`Quitando ID: ${id}`); // Debug para ver si entra aquí
       newSelectedCards.delete(id);
     } else {
-      console.log(`Agregando ID: ${id}`);
       newSelectedCards.add(id);
     }
 
-    // 4. Guardamos y actualizamos estado
     localStorage.setItem('selectedCards', JSON.stringify(Array.from(newSelectedCards)));
     setSelectedCards(newSelectedCards);
   }
 
-  // 3. Renderizado
   if (isLoading) {
     return <div style={{textAlign: 'center', marginTop: '50px', color: 'white'}}>Invoncando cartas...</div>;
   }
@@ -80,9 +126,15 @@ export function Inicio({selectedCards, setSelectedCards}: {
       <div className='StoreContainer'>
         
         <h2 className="section-title">Cartas</h2>
+        <Filtro
+          cartas={cardsStore as CartaConCantidad[]}
+          onFiltrado={handleFiltrado}
+          opcionesOrden={["name", "attack", "defense"]}
+        />
+        
         <section className='CardsStoreContainer'>
-          {cardsStore.length > 0 ? (
-            cardsStore.map(value => {
+          {cartasAMostrar.length > 0 ? (
+            cartasAMostrar.map(value => {
               const isSelected = selectedCards.has(value.id);
               return (
                 <CardStoreItem 
@@ -97,7 +149,12 @@ export function Inicio({selectedCards, setSelectedCards}: {
               );
             })
           ) : (
-            <p style={{color: '#aaa'}}>No se encontraron cartas en la base de datos.</p>
+            // Solo muestra este mensaje si HAY filtro activo pero NO hay resultados
+            hayFiltroActivo ? (
+              <p style={{color: '#aaa'}}>No se encontraron cartas que coincidan con la búsqueda.</p>
+            ) : (
+              <p style={{color: '#aaa'}}>No se encontraron cartas en la base de datos.</p>
+            )
           )}
         </section>
 

@@ -216,6 +216,7 @@ img[src="/yugioh-home.webp"] {
 
   .StoreContainer {
     padding: 40px 15px 60px;
+    display: flex;
   }
 
   .section-title {
@@ -282,4 +283,8 @@ img[src="/yugioh-home.webp"] {
 .CardsStoreContainer > * {
   max-width: 100%;
   width: min(100%, 320px);
+}
+
+.FiltroContainer{
+  margin-bottom: 2rem;
 }

@@ -115,7 +115,7 @@ function ManageSingles() {
   };
 
   return (
-    <div>
+    <div className='admin-cartas'>
       <PageTitle title="Gestión de Cartas (Admin)" />
 
       <div style={{ padding: '2rem', height: '100%' }}>
