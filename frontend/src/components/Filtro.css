@@ -1,0 +1,63 @@
+.FiltroContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin: 0 auto;
+  gap: 1.2rem;
+  margin-top: 1.5rem;
+  background-color: #2a2a2a;
+  padding: 0.9rem 1.7rem;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(230, 194, 0, 0.35);
+}
+
+/* Texto del label */
+.FiltroContainer label {
+  color: #E6C200;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* Select */
+.FiltroContainer select {
+  background-color: #E6C200;
+  color: #1a1a1a;
+  border: 2px solid #E6C200;
+  border-radius: 8px;
+  padding: 0.45rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.15s ease-in-out;
+}
+
+.FiltroContainer select:hover {
+  transform: scale(1.05);
+}
+
+/* Opciones */
+.FiltroContainer option {
+  background-color: #1a1a1a;
+  color: #E6C200;
+}
+
+/* Input estilo amarillo */
+.FiltroContainer input {
+  background-color: transparent;
+  border: 2px solid #E6C200;
+  padding: 0.45rem 0.8rem;
+  border-radius: 8px;
+  color: #E6C200;
+  font-size: 1rem;
+  outline: none;
+  width: 180px;
+  transition: all 0.2s ease-in-out;
+}
+
+.FiltroContainer input::placeholder {
+  color: #bca400;
+}
+
+.FiltroContainer input:focus {
+  box-shadow: 0 0 8px #E6C200;
+}
