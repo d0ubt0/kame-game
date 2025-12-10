@@ -12,13 +12,13 @@ export function Footer() {
                 
                 <div className="footerSocial">
                 <a href="https://facebook.com" target="_blank" rel="noreferrer">
-                    <img src="../public/facebook.png" alt="facebook" />
+                    <img src="/facebook.png" alt="facebook" />
                 </a>
                 <a href="https://instagram.com" target="_blank" rel="noreferrer">
-                    <img src="../public/instagram.png" alt="instagram" />
+                    <img src="/instagram.png" alt="instagram" />
                 </a>
                 <a href="https://discord.com" target="_blank" rel="noreferrer">
-                    <img src="../public/discord.png" alt="discord" />
+                    <img src="./discord.png" alt="discord" />
                 </a>
                 </div>
             </div>
