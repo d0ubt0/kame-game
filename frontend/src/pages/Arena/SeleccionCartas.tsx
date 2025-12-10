@@ -60,7 +60,7 @@ export default function SeleccionCartas() {
     const fetchData = async () => {
       try {
         // 1. Cargar colección del usuario
-        const resColeccion = await fetch(`http://localhost:3001/api/users/collection`, { headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() },credentials: "include"});
+        const resColeccion = await fetch(`http://localhost:3001/api/users/${user.id}/collection`, { headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() },credentials: "include"});
         if (resColeccion.ok) {
           const data = await resColeccion.json();
           const cartasFormateadas = data.map((item: any) => ({

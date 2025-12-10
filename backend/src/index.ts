@@ -260,23 +260,30 @@ app.delete("/api/packs/:id", authMiddleware, async (req: AuthRequest, res) => {
 });
 
 // COLECCIÓN DEL USUARIO
+// COLECCIÓN DEL USUARIO
 app.get(
-  "/api/users/collection",
+  "/api/users/:id/collection",
   authMiddleware,
   async (req: AuthRequest, res) => {
-    const id = req.user!.id;
+    // 1. Obtenemos el ID de la URL y el del Token
+    const { id } = req.params;
+    const userIdFromToken = req.user!.id;
+
+    // 2. Validación de seguridad: ¿El usuario intenta ver SU propia colección?
+    if (Number(id) !== userIdFromToken) {
+       return res.status(403).json({ error: "No tienes permiso para ver esta colección" });
+    }
+
     try {
-      // Buscamos en la tabla intermedia 'UserCard'
       const collection = await prisma.userCard.findMany({
         where: {
-          userId: Number(id),
+          userId: Number(id), // O usa userIdFromToken, son iguales ahora
         },
         include: {
-          card: true, // <--- ¡Esto es clave! Trae el nombre, imagen, ataque, etc.
+          card: true, 
         },
       });
 
-      // La respuesta será un array tipo: [{ quantity: 2, card: {...} }, ...]
       res.json(collection);
     } catch (error) {
       console.error(error);

@@ -5,7 +5,7 @@ import { PageTitle } from '../../components/PageTitle';
 import type { Carta, CartaFormData } from '../../db/yugioh';
 
 // URL base de tu API
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+const API_URL = 'http://localhost:3001/api/cards';
 
 function ManageSingles() {
   const [singles, setSingles] = useState<Carta[]>([]);

@@ -30,7 +30,7 @@ export const CartItem: React.FC<CartItemProps> = ({ id, name, price, image, quan
       </div>
       <div className="eliminar-item">
         <button className="cart-item-remove" onClick={() => onRemove(id)}>
-          <img src="../public/eliminar.png" alt="eliminar" className='eliminar-cart-item'/>
+          <img src="/eliminar.png" alt="eliminar" className='eliminar-cart-item'/>
         </button>
       </div>
       </div>

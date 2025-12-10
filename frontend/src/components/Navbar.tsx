@@ -80,7 +80,7 @@ export function Navbar() {
             <>
               <span className="userName">Hola, {user?.username}</span>
               <button onClick={handleLogoutClick} className="authButton">
-                <img src="../public/logout.png" alt="Cerrar Sesion" className="icono-logout"/>
+                <img src="/logout.png" alt="Cerrar Sesion" className="icono-logout"/>
                 <span>Cerrar Sesión</span>
               </button>
             </>
