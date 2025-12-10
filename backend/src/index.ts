@@ -15,7 +15,7 @@ app.use(
       "http://localhost:5173",
       "https://kame-game-4.onrender.com",
       "https://incredible-creation.up.railway.app",
-      "https://kame-game-store.onrender.com/"
+      "https://kame-game-store.onrender.com"
     ],
     credentials: true,
   })
