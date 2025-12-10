@@ -33,7 +33,7 @@ export function Navbar() {
       <nav className="navbar">
         <div className="logo">
           <Link to="/" onClick={closeMenu}>
-            <img src="../public/logo-p.png" alt="Logo" className="icono-logo"/>
+            <img src="/logo-p.png" alt="Logo" className="icono-logo"/>
             <span>Yu-Gi-Oh Store</span>
           </Link>
         </div>
@@ -51,25 +51,25 @@ export function Navbar() {
         <ul className={`navLinks ${menuOpen ? 'active' : ''}`}>
           <li>
             <Link to="/Admin" onClick={closeMenu}>
-              <img src="../public/admin.png" alt="Administrador" className="icono-admin" />
+              <img src="/admin.png" alt="Administrador" className="icono-admin" />
               <span>Admin</span>
             </Link>
           </li>
           <li>
             <Link to="/Arena" onClick={closeMenu}>
-              <img src="../public/arena.png" alt="Arena de Batalla" className="icono-arena"/>
+              <img src="arena.png" alt="Arena de Batalla" className="icono-arena"/>
               <span>Arena de Batalla</span>
             </Link>
           </li>
           <li>
             <Link to="/Coleccion" onClick={closeMenu}>
-              <img src="../public/carta.png" alt="Mi Colección" className="icono-coleccion"/>
+              <img src="/carta.png" alt="Mi Colección" className="icono-coleccion"/>
               <span>Mi Colección</span>
             </Link>
           </li>
           <li>
             <Link to="/Carrito" onClick={closeMenu}>
-              <img src="../public/carrito.png" alt="Carrito" className="icono-carrito"/>
+              <img src="/carrito.png" alt="Carrito" className="icono-carrito"/>
               <span>Carrito</span>
             </Link>
           </li>
@@ -86,7 +86,7 @@ export function Navbar() {
             </>
           ) : (
             <Link to="/login" className="authButton" onClick={closeMenu}>
-              <img src="../public/login.png" alt="Iniciar Sesion" className="icono-login"/>
+              <img src="/login.png" alt="Iniciar Sesion" className="icono-login"/>
               <span>Iniciar Sesión</span>
             </Link>
           )}
@@ -98,7 +98,7 @@ export function Navbar() {
         <div className="modalOverlay" onClick={cancelLogout}>
           <div className="modalContent" onClick={(e) => e.stopPropagation()}>
             <div className="modalHeader">
-              <img src="../public/logout.png" alt="Logout" className="modalIcon"/>
+              <img src="/logout.png" alt="Logout" className="modalIcon"/>
               <h2>¿Cerrar Sesión?</h2>
             </div>
             <p className="modalText">
