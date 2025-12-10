@@ -14,7 +14,7 @@ export default function Registro() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccess("");
@@ -24,7 +24,8 @@ export default function Registro() {
       return;
     }
 
-    const ok = register(form.email, form.password);
+    const ok = await register(form.email, form.password);
+
     if (ok) {
       setSuccess("Usuario registrado con éxito. Redirigiendo al login...");
       setTimeout(() => navigate("/login"), 2000);
