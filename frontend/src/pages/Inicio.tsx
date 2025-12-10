@@ -76,8 +76,9 @@ export function Inicio({selectedCards, setSelectedCards}: {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
         // Petición de Cartas
-        const cardsResponse = await fetch('http://localhost:3001/api/cards', {headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() }, credentials: "include"});
+        const cardsResponse = await fetch(`${API_URL}/api/cards`, {headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() }, credentials: "include"});
         const cardsData = await cardsResponse.json();
         setCardsStore(cardsData);
         // Inicializar cartasFiltradas con todas las cartas
@@ -85,7 +86,7 @@ export function Inicio({selectedCards, setSelectedCards}: {
         cartasFiltradasRef.current = cardsData;
 
         // Petición de Paquetes (Si no tienes este endpoint aún, puedes comentar esto)
-        const packsResponse = await fetch('http://localhost:3001/api/packs', { headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() },credentials: "include"});
+        const packsResponse = await fetch(`${API_URL}/api/packs`, { headers: {"Authorization": "Bearer " + localStorage.getItem("token")?.toString() },credentials: "include"});
         if (packsResponse.ok) {
            const packsData = await packsResponse.json();
            setPacksStore(packsData);
