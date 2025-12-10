@@ -8,8 +8,6 @@ import { PasswordService } from "./passwordService";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`⚡ Servidor listo en el puerto ${PORT}`));
-
 
 app.use(
   cors({
